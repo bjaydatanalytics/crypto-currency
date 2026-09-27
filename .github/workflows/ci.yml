@@ -1,0 +1,106 @@
+name: CI
+
+# Runs on every push and pull request. Vercel deploys independently of this
+# workflow, so see the note at the foot of this file about gating deployment
+# behind these checks — a red CI run does not, by itself, stop a deploy.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A newer push supersedes an in-flight run on the same ref. Saves minutes and
+# stops a stale failure sitting on a branch that has already been fixed.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck, lint, schema, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # ---------------------------------------------------------------
+      # No database, no secrets.
+      #
+      # Every step below runs without DATABASE_URL or any API key. That is
+      # verified, not assumed: environment validation is deferred to first
+      # access, and every page that reads the database is force-dynamic, so a
+      # build needs neither. It means CI needs no secrets at all, and a Neon
+      # outage cannot turn CI red.
+      # ---------------------------------------------------------------
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Migration files are internally consistent
+        run: npx drizzle-kit check
+
+      # Catches the specific mistake that breaks a production deploy: editing
+      # db/schema.ts without running `db:generate`. The schema would then be
+      # ahead of the migrations, `db:migrate` would apply nothing, and the
+      # deployed code would query columns that do not exist. Generating here
+      # must produce no new file.
+      - name: Schema and migrations are in sync
+        run: |
+          npx drizzle-kit generate
+          if [ -n "$(git status --porcelain db/migrations)" ]; then
+            echo "::error::db/schema.ts has changes with no matching migration."
+            echo "Run 'npm run db:generate', review the SQL, and commit it."
+            git status --porcelain db/migrations
+            exit 1
+          fi
+          echo "In sync."
+
+      - name: Build
+        run: npm run build
+
+  secrets:
+    name: No credentials in tracked files
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # A deliberately small, high-signal scan rather than a general secret
+      # scanner. It looks for the shapes of credentials this project actually
+      # uses, and for .env files that should never be tracked. `.env.example`
+      # is excluded by name because it exists to hold empty placeholders.
+      - name: Scan
+        run: |
+          set -u
+          fail=0
+
+          if git ls-files | grep -E '^\.env($|\.)' | grep -v '^\.env\.example$'; then
+            echo "::error::An .env file is tracked. Remove it and add it to .gitignore."
+            fail=1
+          fi
+
+          # postgres://user:password@host, Resend keys, CoinGecko keys,
+          # Neon role passwords, and PEM private keys.
+          patterns='postgres(ql)?://[^:]+:[^@]+@|re_[A-Za-z0-9]{20,}|CG-[A-Za-z0-9]{20,}|npg_[A-Za-z0-9]{10,}|BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY'
+
+          if git grep -nIE "$patterns" -- . ':!.env.example' ':!package-lock.json' ':!README.md'; then
+            echo "::error::A value matching a credential pattern is committed."
+            echo "Remove it, rotate the credential, and read it from the environment instead."
+            fail=1
+          fi
+
+          if [ "$fail" -eq 0 ]; then echo "Clean."; fi
+          exit $fail
