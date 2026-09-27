@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790152207874,
+      "tag": "0000_cloudy_drax",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790280620973,
+      "tag": "0001_overjoyed_korg",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790323169377,
+      "tag": "0002_natural_hawkeye",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790328468625,
+      "tag": "0003_rare_shape",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790384360375,
+      "tag": "0004_melted_vertigo",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790387505844,
+      "tag": "0005_remarkable_colleen_wing",
+      "breakpoints": true
+    }
+  ]
+}

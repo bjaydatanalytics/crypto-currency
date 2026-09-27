@@ -1,0 +1,227 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { AlertTriangle, Info } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Modal } from '@/components/ui/modal'
+import { Select } from '@/components/ui/select'
+import { useToast } from '@/components/ui/toast'
+import {
+  getDepositAddress,
+  requestDeposit,
+  requestTransfer,
+  requestWithdrawal,
+} from '@/lib/api/wallet'
+import type { WalletBalance } from '@/lib/types'
+import { formatAmount, formatCurrency } from '@/lib/utils'
+
+export type WalletAction = 'deposit' | 'withdraw' | 'transfer'
+
+const titles: Record<WalletAction, string> = {
+  deposit: 'Deposit',
+  withdraw: 'Withdraw',
+  transfer: 'Transfer',
+}
+
+/**
+ * Wallet action dialog.
+ *
+ * This modal collects input and then reports the service's refusal. It never
+ * renders a success state: in this build nothing is submitted to a custody
+ * backend, so any "deposit complete" or "withdrawal sent" message would be
+ * false. The address panel likewise shows no address at all, rather than a
+ * placeholder string that someone might actually send funds to.
+ */
+export function WalletActionModal({
+  open,
+  action,
+  wallet,
+  wallets,
+  onClose,
+}: {
+  open: boolean
+  action: WalletAction
+  wallet: WalletBalance | null
+  wallets: WalletBalance[]
+  onClose: () => void
+}) {
+  const { toast } = useToast()
+  const [amount, setAmount] = useState('')
+  const [address, setAddress] = useState('')
+  const [destination, setDestination] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [result, setResult] = useState<string | null>(null)
+  const [depositAddress, setDepositAddress] = useState<string | null>(null)
+  const [addressChecked, setAddressChecked] = useState(false)
+
+  // Reset whenever the dialog opens for a different asset or action
+  useEffect(() => {
+    if (!open) return
+    setAmount('')
+    setAddress('')
+    setDestination('')
+    setResult(null)
+    setDepositAddress(null)
+    setAddressChecked(false)
+
+    if (action === 'deposit' && wallet) {
+      getDepositAddress(wallet.assetId, wallet.network).then(({ data }) => {
+        setDepositAddress(data.address)
+        setAddressChecked(true)
+      })
+    }
+  }, [open, action, wallet])
+
+  if (!wallet) return null
+
+  const numericAmount = Number(amount)
+  const amountValid = Number.isFinite(numericAmount) && numericAmount > 0
+  const exceedsBalance = action !== 'deposit' && numericAmount > wallet.available
+
+  const canSubmit =
+    amountValid &&
+    !exceedsBalance &&
+    (action === 'deposit' ||
+      (action === 'withdraw' && address.trim().length > 0) ||
+      (action === 'transfer' && destination.trim().length > 0))
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault()
+    if (!canSubmit || !wallet) return
+
+    setSubmitting(true)
+
+    const response =
+      action === 'deposit'
+        ? await requestDeposit(wallet.assetId, numericAmount)
+        : action === 'withdraw'
+          ? await requestWithdrawal(wallet.assetId, numericAmount, address.trim())
+          : await requestTransfer(wallet.assetId, numericAmount, destination.trim())
+
+    setSubmitting(false)
+    setResult(response.data.message)
+    toast({
+      tone: 'warn',
+      title: `${titles[action]} not processed`,
+      description: response.data.message,
+    })
+  }
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={`${titles[action]} ${wallet.symbol}`}
+      description={
+        action === 'deposit'
+          ? `Add ${wallet.name} to your account`
+          : action === 'withdraw'
+            ? `Send ${wallet.name} to an external address`
+            : `Move ${wallet.name} within your account`
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="rounded-xl border border-line bg-base-800 p-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted">Available</span>
+            <span className="num text-white">
+              {formatAmount(wallet.available)} {wallet.symbol}
+            </span>
+          </div>
+          <div className="mt-2 flex items-center justify-between text-sm">
+            <span className="text-muted">Value</span>
+            <span className="num text-white/80">{formatCurrency(wallet.usdValue)}</span>
+          </div>
+        </div>
+
+        {action === 'deposit' && (
+          <div className="rounded-xl border border-warn/25 bg-warn/[0.07] p-4">
+            <p className="flex items-start gap-2.5 text-sm font-medium text-warn">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              No deposit address available
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-white/75">
+              {addressChecked && depositAddress === null
+                ? `A deposit address for ${wallet.symbol} on ${wallet.network} can only be generated by a custody backend, which is not connected in this build. Do not send funds anywhere on the basis of this screen — assets sent to a wrong address are permanently lost.`
+                : 'Checking for a deposit address…'}
+            </p>
+          </div>
+        )}
+
+        {action === 'withdraw' && (
+          <Input
+            label="Destination address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder={`${wallet.symbol} address`}
+            hint={`Network: ${wallet.network ?? 'not set'}. Sending to the wrong network normally means permanent loss.`}
+            required
+          />
+        )}
+
+        {action === 'transfer' && (
+          <Select
+            label="Destination"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            options={[
+              { value: '', label: 'Select a destination' },
+              ...wallets
+                .filter((w) => w.assetId !== wallet.assetId)
+                .map((w) => ({ value: w.assetId, label: `${w.name} wallet` })),
+            ]}
+          />
+        )}
+
+        <Input
+          label="Amount"
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="any"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="0.00"
+          suffix={wallet.symbol}
+          error={exceedsBalance ? 'Amount exceeds your available balance.' : undefined}
+        />
+
+        {action !== 'deposit' && (
+          <button
+            type="button"
+            onClick={() => setAmount(String(wallet.available))}
+            className="text-xs font-medium text-accent transition-colors hover:text-accent-bright"
+          >
+            Use maximum ({formatAmount(wallet.available)} {wallet.symbol})
+          </button>
+        )}
+
+        <div className="flex items-start gap-2.5 rounded-lg border border-line bg-white/[0.02] p-3.5">
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted" aria-hidden="true" />
+          <p className="text-xs leading-relaxed text-muted">
+            Network and platform fees are set by the operator and are not configured in this build.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-3 sm:flex-row-reverse">
+          <Button type="submit" loading={submitting} disabled={!canSubmit} className="sm:flex-1">
+            Continue
+          </Button>
+          <Button type="button" variant="secondary" onClick={onClose} className="sm:flex-1">
+            Cancel
+          </Button>
+        </div>
+
+        {result && (
+          <p
+            role="status"
+            className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-white/80"
+          >
+            {result}
+          </p>
+        )}
+      </form>
+    </Modal>
+  )
+}

@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-base text-white antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    /* Guard against any single element pushing the page sideways on small screens */
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-semibold tracking-tight text-white;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, consistent keyboard focus across the whole app */
+  :focus-visible {
+    outline: 2px solid #b8ff00;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: rgba(184, 255, 0, 0.25);
+    color: #fff;
+  }
+
+  /* Scrollbars */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #080a07;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    border: 2px solid #080a07;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(184, 255, 0, 0.35);
+  }
+}
+
+@layer components {
+  /* Financial figures: tabular so columns line up cleanly */
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    @apply font-mono;
+  }
+
+  .container-x {
+    @apply mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8;
+  }
+
+  .card-surface {
+    @apply rounded-2xl border border-line bg-surface;
+  }
+
+  .hairline {
+    @apply border-t border-line;
+  }
+
+  /* Accent text gradient used sparingly on key headline words */
+  .text-accent-gradient {
+    @apply bg-gradient-to-r from-accent to-accent-bright bg-clip-text text-transparent;
+  }
+
+  .skeleton-shimmer {
+    @apply relative overflow-hidden bg-white/[0.06];
+  }
+  .skeleton-shimmer::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Radial lime glow used behind hero / CTA compositions */
+  .glow-radial {
+    background-image: radial-gradient(
+      ellipse 60% 50% at 50% 0%,
+      rgba(184, 255, 0, 0.14),
+      transparent 70%
+    );
+  }
+}
+
+/* Respect users who prefer less motion: neutralise all decorative animation */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Recharts tooltip/cursor defaults so charts inherit the dark system */
+.recharts-default-tooltip {
+  background: #11140f !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+}
+.recharts-cartesian-axis-tick text {
+  fill: #8c9188;
+  font-size: 11px;
+}
+.recharts-surface:focus {
+  outline: none;
+}
