@@ -5,10 +5,5 @@
       "path": "/api/cron/maturities",
       "schedule": "0 2 * * *"
     }
-  ],
-  "functions": {
-    "app/api/cron/maturities/route.ts": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }

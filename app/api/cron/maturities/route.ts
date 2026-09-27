@@ -37,6 +37,20 @@ import { matureDueInvestments } from '@/lib/server/investments'
  * separately gated on its date and on treasury funds.
  */
 
+/**
+ * Raised from the platform default because the sweep matures contracts one at a
+ * time, and a backlog after an outage could take longer than 10 seconds.
+ *
+ * Declared here as route segment config rather than through `functions` in
+ * vercel.json: for the App Router this is the supported form, and a glob in
+ * vercel.json that fails to match a built function fails the whole Vercel
+ * build — a deployment blocked by a setting that was only ever an optimisation.
+ *
+ * 60s is the Hobby-plan ceiling. Raise it on a paid plan if the backlog ever
+ * warrants it.
+ */
+export const maxDuration = 60
+
 async function runSweep(request: Request) {
   const secret = env.CRON_SECRET
 
