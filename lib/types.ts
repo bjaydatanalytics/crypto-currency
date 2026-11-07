@@ -149,9 +149,13 @@ export type PlanTier = 'starter' | 'advanced' | 'pro'
  * are not something the frontend may assert. Any performance figure must come
  * from the backend, be sourced from real activity, and ship with a disclosure.
  */
+/** Which catalogue a plan belongs to: the general grid, or the 401k page. */
+export type PlanCategory = 'standard' | 'retirement'
+
 export interface InvestmentPlan {
   id: string
   tier: PlanTier
+  category: PlanCategory
   name: string
   summary: string
   /** Configured by the backend; null until an operator sets it */

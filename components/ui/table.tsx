@@ -34,7 +34,7 @@ export function Tr({
     <tr
       className={cn(
         'border-b border-line last:border-0',
-        interactive && 'transition-colors hover:bg-white/[0.03]',
+        interactive && 'transition-colors hover:bg-elevate/[0.03]',
         className,
       )}
       {...props}
@@ -68,7 +68,7 @@ export function Td({
   return (
     <td
       className={cn(
-        'whitespace-nowrap px-4 py-4 text-sm text-white/90',
+        'whitespace-nowrap px-4 py-4 text-sm text-ink/90',
         numeric && 'num text-right',
         className,
       )}
@@ -103,7 +103,7 @@ export function MobileRow({
   return (
     <div className={cn('flex items-center justify-between gap-3 py-1.5', className)}>
       <span className="text-xs uppercase tracking-wider text-muted">{label}</span>
-      <span className="text-sm text-white/90">{value}</span>
+      <span className="text-sm text-ink/90">{value}</span>
     </div>
   )
 }

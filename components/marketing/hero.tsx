@@ -70,14 +70,6 @@ export function Hero() {
               </ButtonLink>
             </motion.div>
 
-            <motion.p
-              variants={fadeUp}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-7 max-w-md text-xs leading-relaxed text-muted"
-            >
-              Digital assets are volatile and you may get back less than you put in. Figures shown
-              are sample data for demonstration and are not a forecast or a guarantee of return.
-            </motion.p>
           </motion.div>
 
           <div className="relative lg:pl-4">

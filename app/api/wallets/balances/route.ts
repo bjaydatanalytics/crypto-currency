@@ -3,7 +3,7 @@ import { db } from '@/db'
 import { linkedWallets } from '@/db/wallet-schema'
 import { ok, withErrorHandling } from '@/lib/server/api'
 import { readBalances } from '@/lib/server/chain/evm'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { getMarketQuotes } from '@/lib/server/market-service'
 
 /**
@@ -18,7 +18,7 @@ import { getMarketQuotes } from '@/lib/server/market-service'
  * authoritative on-chain amount, not a second source of truth.
  */
 export const GET = withErrorHandling(async () => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const wallets = await db

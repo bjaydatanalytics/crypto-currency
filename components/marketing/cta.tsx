@@ -40,11 +40,6 @@ export function Cta() {
               Explore Markets
             </ButtonLink>
           </div>
-
-          <p className="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-muted">
-            Capital at risk. Digital assets are volatile and you may get back less than you put in.
-            This is a demonstration build — no real account, funds or trading are available.
-          </p>
         </Reveal>
       </div>
     </section>

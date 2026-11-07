@@ -1,5 +1,5 @@
 import { badRequest, conflict, created, notFound, ok, parseBody, withErrorHandling } from '@/lib/server/api'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { getRequestContext } from '@/lib/server/session'
 import { addTicketMessage, getUserTicket, SupportError } from '@/lib/server/support'
 import { ticketReplySchema } from '@/lib/server/validation'
@@ -14,7 +14,7 @@ import { ticketReplySchema } from '@/lib/server/validation'
  */
 export const GET = withErrorHandling(
   async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
-    const guard = await requireVerifiedUser()
+    const guard = await requireUser()
     if (!guard.ok) return guard.response
 
     const { id } = await params
@@ -31,7 +31,7 @@ export const GET = withErrorHandling(
 /** POST — the customer replies on their own ticket. */
 export const POST = withErrorHandling(
   async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
-    const guard = await requireVerifiedUser()
+    const guard = await requireUser()
     if (!guard.ok) return guard.response
 
     const body = await parseBody(request, ticketReplySchema)

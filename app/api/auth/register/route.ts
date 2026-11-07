@@ -1,16 +1,33 @@
 import { db } from '@/db'
-import { users, verificationTokens } from '@/db/schema'
+import { users } from '@/db/schema'
 import { created, parseBody, tooManyRequests, withErrorHandling } from '@/lib/server/api'
 import { AuditAction, recordAudit } from '@/lib/server/audit'
-import { generateToken, hashPassword, hashToken } from '@/lib/server/crypto'
-import { capabilities } from '@/lib/server/env'
-import { sendVerificationEmail } from '@/lib/server/mailer'
+import { hashPassword } from '@/lib/server/crypto'
+import { publicUser } from '@/lib/server/guard'
 import { RULES, checkRateLimit } from '@/lib/server/rate-limit'
-import { getRequestContext } from '@/lib/server/session'
+import { createSession, getRequestContext } from '@/lib/server/session'
 import { registerSchema } from '@/lib/server/validation'
 
-const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000
-
+/**
+ * Registration.
+ *
+ * EMAIL VERIFICATION IS DELIBERATELY NOT PART OF THIS FLOW. An account is
+ * usable the moment it is created: `emailVerifiedAt` is stamped at insert and
+ * a session is issued straight away, so the customer lands signed in rather
+ * than waiting on a link.
+ *
+ * What that costs, so it is a known trade and not a surprise later:
+ *
+ * - A typo'd address creates a working account the real owner cannot reach,
+ *   and password-reset mail goes to a stranger.
+ * - Nothing proves the address belongs to the person signing up, so sign-ups
+ *   are cheap to automate and to make in someone else's name.
+ * - Transactional mail (withdrawal alerts in particular) may silently go
+ *   nowhere, which removes the signal that an account has been taken over.
+ *
+ * KYC is untouched and still gates anything that moves money, so an
+ * unverifiable address cannot deposit or withdraw on its own.
+ */
 export const POST = withErrorHandling(async (request: Request) => {
   const context = await getRequestContext()
 
@@ -48,6 +65,8 @@ export const POST = withErrorHandling(async (request: Request) => {
       email,
       passwordHash,
       acceptedTermsAt: acceptedTerms ? new Date() : null,
+      // Stamped on creation: there is no separate confirmation step to wait for.
+      emailVerifiedAt: new Date(),
     })
     .onConflictDoNothing({ target: users.email })
     .returning()
@@ -61,24 +80,25 @@ export const POST = withErrorHandling(async (request: Request) => {
    * told by email instead.
    */
   if (!user) {
+    /**
+     * The address was already registered.
+     *
+     * Still reports success, and deliberately issues no session: saying
+     * "already in use" would turn this endpoint into an oracle for who holds
+     * an account here, and signing the caller in would hand them someone
+     * else's. `authenticated: false` is what the form reads to decide whether
+     * it can go straight to the dashboard.
+     */
     return created({
       registered: true,
-      emailDelivery: capabilities.email ? 'sent' : 'unavailable',
-      message: capabilities.email
-        ? 'Check your email for a link to confirm your address.'
-        : 'Account request received. Email delivery is not configured on this deployment, so no confirmation link was sent.',
+      authenticated: false,
+      message:
+        'If that address is not already registered, the account has been created. ' +
+        'Try signing in.',
     })
   }
 
-  const token = generateToken()
-  await db.insert(verificationTokens).values({
-    userId: user.id,
-    purpose: 'email_verification',
-    tokenHash: hashToken(token),
-    expiresAt: new Date(Date.now() + VERIFICATION_TTL_MS),
-  })
-
-  const mail = await sendVerificationEmail(user.email, token)
+  await createSession(user.id, context)
 
   await recordAudit({
     actorId: user.id,
@@ -86,16 +106,14 @@ export const POST = withErrorHandling(async (request: Request) => {
     action: AuditAction.UserRegistered,
     targetType: 'user',
     targetId: user.id,
-    metadata: { emailSent: mail.sent },
+    metadata: { emailVerificationRequired: false },
     context,
   })
 
-  // No session is issued here: the address is confirmed before the account is usable.
   return created({
     registered: true,
-    emailDelivery: mail.sent ? 'sent' : 'unavailable',
-    message: mail.sent
-      ? 'Check your email for a link to confirm your address.'
-      : 'Account created. Email delivery is not configured on this deployment, so no confirmation link was sent — an administrator must verify this address manually.',
+    authenticated: true,
+    user: publicUser(user),
+    message: 'Your account is ready.',
   })
 })

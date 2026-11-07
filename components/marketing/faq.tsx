@@ -24,12 +24,12 @@ export function Accordion({ items, className }: { items: FaqItem[]; className?: 
                 aria-expanded={expanded}
                 aria-controls={`faq-panel-${index}`}
                 id={`faq-trigger-${index}`}
-                className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left transition-colors hover:bg-white/[0.02] sm:px-6"
+                className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left transition-colors hover:bg-elevate/[0.02] sm:px-6"
               >
                 <span
                   className={cn(
                     'text-[15px] font-medium transition-colors',
-                    expanded ? 'text-accent' : 'text-white',
+                    expanded ? 'text-accent' : 'text-ink',
                   )}
                 >
                   {item.question}

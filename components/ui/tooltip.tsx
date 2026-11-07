@@ -37,7 +37,7 @@ export function Tooltip({ content, children, side = 'top', className }: TooltipP
             exit={{ opacity: 0 }}
             transition={{ duration: 0.14 }}
             className={cn(
-              'absolute left-1/2 z-50 w-max max-w-[260px] -translate-x-1/2 rounded-lg border border-line bg-surface-raised px-3 py-2 text-xs font-normal leading-relaxed text-white/90 shadow-xl',
+              'absolute left-1/2 z-50 w-max max-w-[260px] -translate-x-1/2 rounded-lg border border-line bg-surface-raised px-3 py-2 text-xs font-normal leading-relaxed text-ink/90 shadow-xl',
               side === 'top' ? 'bottom-full mb-2' : 'top-full mt-2',
             )}
           >

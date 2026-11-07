@@ -16,10 +16,10 @@ export function AdminNotice() {
       <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
       <div className="min-w-0 text-sm">
         <p className="font-medium text-negative">Unprotected scaffolding — not for deployment</p>
-        <p className="mt-1 leading-relaxed text-white/70">
+        <p className="mt-1 leading-relaxed text-ink/70">
           These admin screens have no authentication or authorisation: any visitor who knows the
           URL can open them. All figures are mock data and no control writes to anything. Put every
-          <code className="mx-1 rounded bg-white/[0.06] px-1 py-0.5 text-xs text-white/80">
+          <code className="mx-1 rounded bg-elevate/[0.06] px-1 py-0.5 text-xs text-ink/80">
             /admin
           </code>
           route behind a server-side role check before this is deployed anywhere reachable.

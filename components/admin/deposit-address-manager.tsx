@@ -159,7 +159,7 @@ function AddAddressDialog({
       <div className="space-y-5">
         <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-          <p className="text-sm leading-relaxed text-white/80">
+          <p className="text-sm leading-relaxed text-ink/80">
             Paste this from the source account, never from a message or a document. Everything
             sent to it by every user you assign it to arrives here, and a transfer to a wrong
             address cannot be reversed by anyone.
@@ -394,7 +394,7 @@ function AssignDialog({
         {chosen && (
           <div className="rounded-xl border border-line bg-base-800 p-4">
             <p className="text-xs uppercase tracking-wider text-muted">Will be shown as</p>
-            <p className="num mt-2 break-all text-sm text-white">{chosen.address}</p>
+            <p className="num mt-2 break-all text-sm text-ink">{chosen.address}</p>
             {chosen.addressTag && (
               <p className="num mt-2 break-all text-sm text-warn">tag: {chosen.addressTag}</p>
             )}
@@ -407,7 +407,7 @@ function AssignDialog({
         {chosen && chosen.assignedUsers > 0 && (
           <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-white/80">
+            <p className="text-sm leading-relaxed text-ink/80">
               This address is already shown to {chosen.assignedUsers} other{' '}
               {chosen.assignedUsers === 1 ? 'user' : 'users'}
               {chosen.addressTag ? '' : ' and carries no memo'}.{' '}
@@ -532,7 +532,7 @@ export function DepositAddressManager() {
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-negative">Could not load addresses</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
           </div>
         </CardBody>
       </Card>
@@ -588,7 +588,7 @@ export function DepositAddressManager() {
                   <Tbody>
                     {addresses.map((entry) => (
                       <Tr key={entry.id}>
-                        <Td className="text-white">{entry.label}</Td>
+                        <Td className="text-ink">{entry.label}</Td>
                         <Td>{entry.assetSymbol}</Td>
                         <Td className="text-muted">{entry.network}</Td>
                         <Td>
@@ -637,7 +637,7 @@ export function DepositAddressManager() {
                 {addresses.map((entry) => (
                   <MobileCard key={entry.id}>
                     <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-white">{entry.label}</p>
+                      <p className="text-sm font-medium text-ink">{entry.label}</p>
                       <Badge tone={entry.status === 'active' ? 'success' : 'neutral'}>
                         {entry.status}
                       </Badge>
@@ -723,7 +723,7 @@ export function DepositAddressManager() {
                     {assignments.map((entry) => (
                       <Tr key={entry.id}>
                         <Td>
-                          <span className="text-white">{entry.userName}</span>
+                          <span className="text-ink">{entry.userName}</span>
                           <span className="block text-xs text-muted">{entry.userEmail}</span>
                         </Td>
                         <Td>{entry.assetSymbol}</Td>
@@ -751,7 +751,7 @@ export function DepositAddressManager() {
               <MobileCardList className="sm:hidden">
                 {assignments.map((entry) => (
                   <MobileCard key={entry.id}>
-                    <p className="text-sm font-medium text-white">{entry.userName}</p>
+                    <p className="text-sm font-medium text-ink">{entry.userName}</p>
                     <p className="text-xs text-muted">{entry.userEmail}</p>
                     <div className="mt-3 divide-y divide-line border-t border-line pt-1">
                       <MobileRow label="Asset" value={`${entry.assetSymbol} · ${entry.network}`} />
@@ -798,7 +798,7 @@ export function DepositAddressManager() {
                   {awaiting.map((user) => (
                     <Tr key={user.id}>
                       <Td>
-                        <span className="text-white">{user.name}</span>
+                        <span className="text-ink">{user.name}</span>
                         <span className="block text-xs text-muted">{user.email}</span>
                       </Td>
                       <Td>

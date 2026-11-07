@@ -10,7 +10,7 @@ export default function AdminWithdrawalsPage() {
         <Card className="border-warn/25 bg-warn/[0.05]">
           <CardBody className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-            <div className="text-sm leading-relaxed text-white/75">
+            <div className="text-sm leading-relaxed text-ink/75">
               <p className="font-medium text-warn">
                 Withdrawal approval is the highest-risk action in the product
               </p>

@@ -96,8 +96,6 @@ export default function OpengraphImage() {
             paddingTop: 26,
           }}
         >
-          {/* Risk warning travels with the shared card, not just the page. */}
-          <span>Capital at risk · Digital assets are volatile · No guaranteed returns</span>
         </div>
       </div>
     ),

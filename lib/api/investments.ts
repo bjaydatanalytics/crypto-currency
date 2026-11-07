@@ -7,11 +7,12 @@
  * never agreed to, or a contract that does not exist.
  */
 
-import type { InvestmentPlan } from '../types'
+import type { InvestmentPlan, PlanCategory } from '../types'
 import { request } from './client'
 
-export async function listPlans(): Promise<InvestmentPlan[]> {
-  return request<InvestmentPlan[]>('/plans')
+/** Omit `category` for every published plan; pass one to get a single catalogue. */
+export async function listPlans(category?: PlanCategory): Promise<InvestmentPlan[]> {
+  return request<InvestmentPlan[]>('/plans', { query: { category } })
 }
 
 export async function fetchPlan(id: string): Promise<InvestmentPlan> {

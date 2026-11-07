@@ -7,6 +7,9 @@ build
 npm-debug.log*
 .env
 .env*.local
+# Backups of env files are still env files — the rule above misses them.
+.env*.bak
+*.env.bak
 .vercel
 next-env.d.ts
 tsconfig.tsbuildinfo

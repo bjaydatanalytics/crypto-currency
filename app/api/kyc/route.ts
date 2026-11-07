@@ -3,14 +3,14 @@ import { db } from '@/db'
 import { kycRecords, users } from '@/db/schema'
 import { conflict, created, ok, parseBody, tooManyRequests, withErrorHandling } from '@/lib/server/api'
 import { AuditAction, recordAudit } from '@/lib/server/audit'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { RULES, checkRateLimit } from '@/lib/server/rate-limit'
 import { getRequestContext } from '@/lib/server/session'
 import { kycSubmitSchema } from '@/lib/server/validation'
 
 /** GET — current verification status and history for the signed-in user. */
 export const GET = withErrorHandling(async () => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const records = await db
@@ -50,7 +50,7 @@ export const GET = withErrorHandling(async () => {
  * satisfied on the user's say-so.
  */
 export const POST = withErrorHandling(async (request: Request) => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const limit = await checkRateLimit(`kyc:${guard.user.id}`, RULES.kycSubmit)

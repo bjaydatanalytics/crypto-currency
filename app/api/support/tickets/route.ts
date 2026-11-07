@@ -1,5 +1,5 @@
 import { created, fail, ok, parseBody, withErrorHandling } from '@/lib/server/api'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { checkRateLimit, RULES } from '@/lib/server/rate-limit'
 import { getRequestContext } from '@/lib/server/session'
 import { createTicket, listUserTickets } from '@/lib/server/support'
@@ -7,7 +7,7 @@ import { createTicketSchema } from '@/lib/server/validation'
 
 /** GET — the signed-in customer's own tickets. */
 export const GET = withErrorHandling(async () => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   return ok({ tickets: await listUserTickets(guard.user.id) })
@@ -21,7 +21,7 @@ export const GET = withErrorHandling(async () => {
  * flood the queue and bury everybody else's genuine problem.
  */
 export const POST = withErrorHandling(async (request: Request) => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const limit = await checkRateLimit(`support-ticket:${guard.user.id}`, RULES.kycSubmit)

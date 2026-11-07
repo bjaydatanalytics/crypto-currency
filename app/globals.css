@@ -3,8 +3,98 @@
 @tailwind utilities;
 
 @layer base {
+  /**
+   * Dark lime — the marketing site, the auth screens and the admin console.
+   *
+   * Values are space-separated RGB channels so Tailwind can apply an opacity
+   * modifier to them (`bg-accent/12`). `--c-line` is the one exception: it
+   * carries its own alpha and is consumed directly, since no utility in the
+   * codebase applies an opacity modifier to a border colour.
+   */
   :root {
     color-scheme: dark;
+
+    --c-base: 5 5 5;
+    --c-base-900: 5 5 5;
+    --c-base-800: 8 10 7;
+    --c-base-700: 11 13 9;
+
+    --c-surface: 13 16 12;
+    --c-surface-raised: 17 20 15;
+
+    --c-accent: 184 255 0;
+    --c-accent-bright: 198 255 36;
+    --c-accent-dim: 143 199 0;
+    --c-on-accent: 0 0 0;
+
+    --c-ink: 255 255 255;
+    --c-muted: 140 145 136;
+    --c-elevate: 255 255 255;
+    --c-line: rgba(255, 255, 255, 0.1);
+
+    --c-positive: 74 222 128;
+    --c-negative: 248 113 113;
+    --c-warn: 251 191 36;
+
+    --c-focus: #b8ff00;
+    --c-selection: rgba(184, 255, 0, 0.25);
+    --c-scroll-track: #080a07;
+    --c-scroll-thumb: rgba(255, 255, 255, 0.12);
+    --c-scroll-thumb-hover: rgba(184, 255, 0, 0.35);
+
+    --c-glow: rgba(184, 255, 0, 0.45);
+    --c-glow-sm: rgba(184, 255, 0, 0.4);
+    --c-shadow-card: 0 1px 0 0 rgba(255, 255, 255, 0.04) inset,
+      0 20px 40px -24px rgba(0, 0, 0, 0.9);
+  }
+
+  /**
+   * Light blue — the signed-in customer panel only.
+   *
+   * Applied by the dashboard layout, so every shared primitive inside it picks
+   * up the light values through the same class names it already uses. Nothing
+   * outside `/dashboard` is affected.
+   *
+   * `--c-elevate` inverts from a white wash to a slate wash: at 3% opacity
+   * white is invisible on a white card, so the inset surfaces that structure
+   * the dark theme would silently disappear here.
+   */
+  [data-panel] {
+    color-scheme: light;
+
+    --c-base: 243 246 251;
+    --c-base-900: 236 240 247;
+    --c-base-800: 255 255 255;
+    --c-base-700: 248 250 252;
+
+    --c-surface: 255 255 255;
+    --c-surface-raised: 248 250 252;
+
+    --c-accent: 37 99 235;
+    --c-accent-bright: 29 78 216;
+    --c-accent-dim: 96 143 245;
+    --c-on-accent: 255 255 255;
+
+    --c-ink: 15 23 42;
+    --c-muted: 100 116 139;
+    --c-elevate: 15 23 42;
+    --c-line: rgba(15, 23, 42, 0.1);
+
+    --c-positive: 22 163 74;
+    --c-negative: 220 38 38;
+    --c-warn: 217 119 6;
+
+    --c-focus: #2563eb;
+    --c-selection: rgba(37, 99, 235, 0.18);
+    --c-scroll-track: #eef2f7;
+    --c-scroll-thumb: rgba(15, 23, 42, 0.18);
+    --c-scroll-thumb-hover: rgba(37, 99, 235, 0.45);
+
+    --c-glow: rgba(37, 99, 235, 0.3);
+    --c-glow-sm: rgba(37, 99, 235, 0.28);
+    /* A light surface reads as raised through a soft drop shadow, not an inset highlight */
+    --c-shadow-card: 0 1px 2px 0 rgba(15, 23, 42, 0.04),
+      0 1px 3px 0 rgba(15, 23, 42, 0.06);
   }
 
   * {
@@ -17,7 +107,7 @@
   }
 
   body {
-    @apply bg-base text-white antialiased;
+    @apply bg-base text-ink antialiased;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     /* Guard against any single element pushing the page sideways on small screens */
     overflow-x: hidden;
@@ -27,7 +117,7 @@
   h2,
   h3,
   h4 {
-    @apply font-semibold tracking-tight text-white;
+    @apply font-semibold tracking-tight text-ink;
     text-wrap: balance;
   }
 
@@ -37,14 +127,14 @@
 
   /* Visible, consistent keyboard focus across the whole app */
   :focus-visible {
-    outline: 2px solid #b8ff00;
+    outline: 2px solid var(--c-focus);
     outline-offset: 2px;
     border-radius: 4px;
   }
 
   ::selection {
-    background: rgba(184, 255, 0, 0.25);
-    color: #fff;
+    background: var(--c-selection);
+    @apply text-ink;
   }
 
   /* Scrollbars */
@@ -53,15 +143,15 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #080a07;
+    background: var(--c-scroll-track);
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--c-scroll-thumb);
     border-radius: 999px;
-    border: 2px solid #080a07;
+    border: 2px solid var(--c-scroll-track);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(184, 255, 0, 0.35);
+    background: var(--c-scroll-thumb-hover);
   }
 }
 
@@ -91,11 +181,11 @@
   }
 
   .skeleton-shimmer {
-    @apply relative overflow-hidden bg-white/[0.06];
+    @apply relative overflow-hidden bg-elevate/[0.06];
   }
   .skeleton-shimmer::after {
     content: '';
-    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-elevate/10 to-transparent;
   }
 }
 
@@ -130,14 +220,15 @@
   }
 }
 
-/* Recharts tooltip/cursor defaults so charts inherit the dark system */
+/* Recharts tooltip/cursor defaults, driven by the active theme's tokens */
 .recharts-default-tooltip {
-  background: #11140f !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgb(var(--c-surface-raised)) !important;
+  border: 1px solid var(--c-line) !important;
   border-radius: 12px !important;
+  color: rgb(var(--c-ink)) !important;
 }
 .recharts-cartesian-axis-tick text {
-  fill: #8c9188;
+  fill: rgb(var(--c-muted));
   font-size: 11px;
 }
 .recharts-surface:focus {

@@ -4,7 +4,7 @@ import { recoveryCodes, users } from '@/db/schema'
 import { conflict, fail, ok, parseBody, withErrorHandling } from '@/lib/server/api'
 import { AuditAction, recordAudit } from '@/lib/server/audit'
 import { decryptSecret, encryptSecret, verifyPassword } from '@/lib/server/crypto'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { sendSecurityAlert } from '@/lib/server/mailer'
 import { getRequestContext } from '@/lib/server/session'
 import {
@@ -24,7 +24,7 @@ import { disableTwoFactorSchema, enableTwoFactorSchema } from '@/lib/server/vali
  * so a failed setup can never lock someone out of their own account.
  */
 export const POST = withErrorHandling(async () => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   if (guard.user.totpEnabledAt) {
@@ -48,7 +48,7 @@ export const POST = withErrorHandling(async () => {
 
 /** PUT — confirm enrolment with a live code, then issue recovery codes. */
 export const PUT = withErrorHandling(async (request: Request) => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const parsed = await parseBody(request, enableTwoFactorSchema)
@@ -104,7 +104,7 @@ export const PUT = withErrorHandling(async (request: Request) => {
  * alone is not enough.
  */
 export const DELETE = withErrorHandling(async (request: Request) => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const parsed = await parseBody(request, disableTwoFactorSchema)

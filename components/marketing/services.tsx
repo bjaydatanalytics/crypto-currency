@@ -130,20 +130,20 @@ export function Services() {
             <RevealItem as="li" key={service.id} id={service.id} className="scroll-mt-28 list-none">
               <Card interactive className="flex h-full flex-col p-6">
                 <div className="flex items-start justify-between gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                     <service.Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
                   {service.pendingTerms && <Badge tone="warn">Terms pending</Badge>}
                 </div>
 
-                <h3 className="mt-5 text-base font-semibold uppercase tracking-wide text-white">
+                <h3 className="mt-5 text-base font-semibold uppercase tracking-wide text-ink">
                   {service.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{service.description}</p>
 
                 <ul className="mt-5 flex-1 space-y-2.5">
                   {service.points.map((point) => (
-                    <li key={point} className="flex items-start gap-2.5 text-sm text-white/75">
+                    <li key={point} className="flex items-start gap-2.5 text-sm text-ink/75">
                       <span
                         className={
                           service.pendingTerms
@@ -159,7 +159,7 @@ export function Services() {
 
                 {service.risk && (
                   <p className="mt-5 border-t border-line pt-4 text-xs leading-relaxed text-muted">
-                    <span className="font-medium text-white/70">Risk: </span>
+                    <span className="font-medium text-ink/70">Risk: </span>
                     {service.risk}
                   </p>
                 )}

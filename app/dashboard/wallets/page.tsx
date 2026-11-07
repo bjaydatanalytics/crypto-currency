@@ -75,7 +75,7 @@ export default function WalletsPage() {
           <KeyRound className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
           <div className="min-w-0 text-sm">
             <p className="font-medium text-accent">You hold your own keys</p>
-            <p className="mt-1 leading-relaxed text-white/70">
+            <p className="mt-1 leading-relaxed text-ink/70">
               Balances below are read directly from the blockchain. This platform cannot move
               your funds, and holds no key that could. Unlinking a wallet stops it being tracked
               and nothing else.
@@ -107,7 +107,7 @@ export default function WalletsPage() {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-base font-semibold text-white">Linked wallets</h2>
+          <h2 className="text-base font-semibold text-ink">Linked wallets</h2>
           <div className="flex gap-2">
             <Button size="sm" variant="secondary" onClick={refresh} loading={refreshing}>
               <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
@@ -123,14 +123,14 @@ export default function WalletsPage() {
         {balances?.failures && balances.failures.length > 0 && (
           <div className="rounded-xl border border-warn/25 bg-warn/[0.07] p-4 text-sm">
             <p className="font-medium text-warn">Some wallets could not be read</p>
-            <ul className="mt-2 space-y-1 text-white/70">
+            <ul className="mt-2 space-y-1 text-ink/70">
               {balances.failures.map((failure) => (
                 <li key={`${failure.chain}-${failure.address}`} className="num text-xs">
                   {shortAddress(failure.address)} on {failure.chain} — {failure.reason}
                 </li>
               ))}
             </ul>
-            <p className="mt-2 text-xs leading-relaxed text-white/60">
+            <p className="mt-2 text-xs leading-relaxed text-ink/60">
               These are shown as unavailable rather than zero — a network problem is not an empty
               wallet.
             </p>
@@ -163,7 +163,7 @@ export default function WalletsPage() {
                     <CardBody>
                       {balance ? (
                         <>
-                          <p className="num text-2xl font-semibold tracking-tight text-white">
+                          <p className="num text-2xl font-semibold tracking-tight text-ink">
                             {Number(balance.amount).toFixed(6)}{' '}
                             <span className="text-base text-muted">{balance.symbol}</span>
                           </p>

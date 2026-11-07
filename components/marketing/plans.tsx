@@ -1,125 +1,172 @@
-import { Check, Info } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { ButtonLink } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { RiskNotice } from '@/components/ui/demo-notice'
 import { RevealGroup, RevealItem } from '@/components/ui/reveal'
 import { Section, SectionHeading } from '@/components/ui/section'
+import { assurances, platform } from '@/lib/config'
 import { listPublicPlans } from '@/lib/server/plans'
 import type { InvestmentPlan } from '@/lib/types'
-import { cn, formatCurrency } from '@/lib/utils'
+import { cn, formatMoney } from '@/lib/utils'
 
 /**
- * Renders a configured value, or a clear "not set" marker.
+ * Public investment packages.
  *
- * Commercial terms are owned by the backend. Where a value is null this shows
- * that it is still to be configured rather than filling the gap with a
- * placeholder figure a visitor could mistake for a real minimum or fee.
+ * Every figure is derived from the stored plan, never typed into the markup:
+ * the headline rate, the term, the stake range and the earnings range all come
+ * from `investment_plans`, so a change in /admin/plans is reflected here on the
+ * next request and the page cannot drift from the terms actually on offer.
  */
-function Term({ label, value }: { label: string; value: string | null }) {
+
+/* ------------------------------------------------------------------ */
+/* Derived wording                                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The term, phrased the way a customer reads it.
+ *
+ * Short terms are stated in hours because "after 1 day" is vague about when a
+ * payout lands and "after 24 hours" is not. Beyond four days the hour count
+ * stops being meaningful and days read better.
+ */
+function describeTerm(days: number | null): string | null {
+  if (days === null) return null
+  if (days <= 4) return `After ${days * 24} hours`
+  return `After ${days} days`
+}
+
+/**
+ * What the plan pays, across its whole stake range.
+ *
+ * A single "max earn" figure answers only what the largest permitted stake
+ * returns, which is not what most people are about to invest. Showing both
+ * ends makes the card answer "what would I get" rather than "what could
+ * somebody get".
+ */
+function earningsRange(plan: InvestmentPlan): string | null {
+  const rate = plan.fixedRatePercent
+  if (rate === null || rate === undefined) return null
+
+  const low = plan.minimumAmount === null ? null : (plan.minimumAmount * rate) / 100
+  const high = plan.maximumAmount === null ? null : (plan.maximumAmount * rate) / 100
+
+  if (low === null && high === null) return null
+  if (high === null) return `$${formatMoney(low!)}+`
+  if (low === null) return `Up to $${formatMoney(high)}`
+  return `$${formatMoney(low)} – $${formatMoney(high)}`
+}
+
+function stakeRange(plan: InvestmentPlan): { minimum: string; maximum: string } {
+  return {
+    minimum: plan.minimumAmount === null ? 'No minimum' : `$${formatMoney(plan.minimumAmount)}`,
+    // "No limit" is a real term, distinct from a limit nobody has configured.
+    maximum: plan.maximumAmount === null ? 'No limit' : `$${formatMoney(plan.maximumAmount)}`,
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Card                                                                */
+/* ------------------------------------------------------------------ */
+
+function Detail({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-baseline justify-between gap-3 py-2">
       <dt className="text-sm text-muted">{label}</dt>
-      <dd
-        className={cn(
-          'text-sm',
-          value ? 'num font-medium text-white' : 'text-xs italic text-muted',
-        )}
-      >
-        {value ?? 'Set by operator'}
-      </dd>
+      <dd className="num text-sm font-medium text-ink">{value}</dd>
     </div>
   )
 }
 
 export function PlanCard({ plan }: { plan: InvestmentPlan }) {
+  const term = describeTerm(plan.duration)
+  const earnings = earningsRange(plan)
+  const { minimum, maximum } = stakeRange(plan)
+  const promisesReturn = plan.fixedRatePercent !== null && plan.fixedRatePercent !== undefined
+
   return (
-    <Card
-      interactive
+    <div
       className={cn(
-        'relative flex h-full flex-col p-6',
-        plan.popular && 'border-accent/35 bg-surface-raised',
+        'relative flex h-full flex-col overflow-hidden rounded-2xl border bg-surface text-center transition-all duration-300',
+        plan.popular
+          ? 'border-accent/40 shadow-glow-sm'
+          : 'border-line hover:border-accent/30 hover:-translate-y-0.5',
       )}
     >
       {plan.popular && (
-        <span className="absolute -top-3 left-6">
-          <Badge tone="accent">Most chosen</Badge>
+        <span className="absolute right-4 top-4 rounded-full bg-accent px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-on-accent">
+          Most chosen
         </span>
       )}
 
-      <h3 className="text-lg font-semibold uppercase tracking-wide text-white">{plan.name}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted">{plan.summary}</p>
+      <div className="p-7">
+        <h3 className="text-sm font-bold uppercase tracking-[0.12em] text-ink">
+          {plan.name} Investment
+        </h3>
 
-      {/**
-       * The promised return, shown with its basis.
-       *
-       * A rate is never rendered as a bare percentage: "8%" means two different
-       * things per-term and annual, and the ambiguity reads in the seller's
-       * favour. The line underneath states that payment depends on the
-       * platform's solvency, because a contractual return is only as good as
-       * the business behind it and a visitor comparing plans deserves to know
-       * that on the card, not buried in a disclosure.
-       */}
-      {plan.fixedRatePercent !== null && plan.fixedRatePercent !== undefined && (
-        <div className="mt-5 rounded-xl border border-accent/25 bg-accent/[0.06] p-4">
-          <p className="num text-2xl font-semibold tracking-tight text-accent">
-            {plan.fixedRatePercent}%
+        {promisesReturn ? (
+          <>
+            <p className="num mt-5 text-[52px] font-bold leading-none tracking-tight text-accent">
+              {plan.fixedRatePercent}%
+            </p>
+            <p className="mt-2 text-sm text-muted">
+              {term ?? 'Term set by operator'}
+              {plan.rateBasis === 'annual' && ' · quoted per year'}
+            </p>
+          </>
+        ) : (
+          <p className="mt-5 text-sm italic leading-relaxed text-muted">
+            This plan promises no fixed return.
           </p>
-          <p className="mt-0.5 text-xs text-white/80">
-            {plan.rateBasis === 'annual'
-              ? 'a year, pro-rated across the term'
-              : 'over the full term'}
-          </p>
-          <p className="mt-2 text-[11px] leading-relaxed text-muted">
-            Contractual, not a projection. Payment depends on this platform remaining solvent —
-            it is not a bank deposit and no deposit guarantee scheme applies.
-          </p>
+        )}
+      </div>
+
+      {earnings && (
+        <div className="border-y border-line bg-elevate/[0.02] px-7 py-4">
+          <p className="num text-xl font-bold tracking-tight text-ink">{earnings}</p>
+          <p className="mt-0.5 text-xs text-muted">Total earnings across the stake range</p>
         </div>
       )}
 
-      <dl className="mt-6 divide-y divide-line border-y border-line">
-        <Term
-          label="Minimum amount"
-          value={plan.minimumAmount === null ? null : formatCurrency(plan.minimumAmount)}
-        />
-        <Term
-          label="Maximum amount"
-          value={plan.maximumAmount === null ? null : formatCurrency(plan.maximumAmount)}
-        />
-        <Term label="Platform fee" value={plan.fee === null ? null : `${plan.fee}%`} />
-        <Term
-          label="Duration"
-          value={plan.duration === null ? null : `${plan.duration} days`}
-        />
-      </dl>
+      <div className="flex flex-1 flex-col p-7 pt-5 text-left">
+        <dl className="divide-y divide-line">
+          <Detail label="Minimum" value={minimum} />
+          <Detail label="Maximum" value={maximum} />
+          <Detail
+            label="Payment server"
+            value={
+              /*
+               * Reports the real custody flag rather than a decorative
+               * "Active". A payments indicator that is hardcoded to green
+               * tells a customer deposits work on the one day they do not.
+               */
+              platform.custodyEnabled ? (
+                <span className="text-positive">Active</span>
+              ) : (
+                <span className="text-warn">Not yet live</span>
+              )
+            }
+          />
+        </dl>
 
-      <ul className="mt-6 flex-1 space-y-3">
-        {plan.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-2.5 text-sm text-white/80">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-            <span className="leading-relaxed">{feature}</span>
-          </li>
-        ))}
-      </ul>
+        <ButtonLink
+          href="/register"
+          variant={plan.popular ? 'primary' : 'secondary'}
+          fullWidth
+          className="mt-6"
+        >
+          Choose Plan
+        </ButtonLink>
 
-      <div className="mt-6 rounded-lg border border-line bg-white/[0.02] p-3.5">
-        <p className="flex items-start gap-2 text-xs leading-relaxed text-muted">
-          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warn" aria-hidden="true" />
-          <span>{plan.riskDisclosure}</span>
-        </p>
+        {assurances.depositAssurance && (
+          <p className="mt-5 border-t border-line pt-4 text-center text-[10px] font-semibold uppercase tracking-wide text-muted">
+            {assurances.depositAssurance}
+          </p>
+        )}
       </div>
-
-      <ButtonLink
-        href="/register"
-        variant={plan.popular ? 'primary' : 'secondary'}
-        fullWidth
-        className="mt-6"
-      >
-        Get Started
-      </ButtonLink>
-    </Card>
+    </div>
   )
 }
+
+/* ------------------------------------------------------------------ */
+/* Section                                                             */
+/* ------------------------------------------------------------------ */
 
 /**
  * Plan cards, read from the database at request time.
@@ -128,78 +175,63 @@ export function PlanCard({ plan }: { plan: InvestmentPlan }) {
  * these are published commercial terms, so the page must show what the
  * operator set a moment ago, not what was true when the site was last built.
  *
- * Only published plans are returned. If none are, the section says so instead
- * of rendering an empty grid — a page that looks broken is better than one
- * that quietly implies there are no plans when there are three unpublished
- * drafts.
+ * Only published plans are returned, and only the standard catalogue —
+ * retirement plans have their own page and would otherwise appear twice.
  *
  * A database failure does **not** take the page down. This section renders on
  * the public homepage, and an uncaught throw here turned a brief Neon blip into
- * a 500 on `/` — a marketing page that cannot be reached because a query timed
- * out. The read is wrapped, and the two failure modes are reported differently
- * on purpose:
+ * a 500 on `/`. The two failure modes are reported differently on purpose:
  *
  *   plans.length === 0   →  "nothing published yet"   (true, and knowable)
  *   unavailable === true  →  "terms unavailable"       (we do not know)
  *
- * Collapsing them would tell a visitor no plans are offered when three are,
- * which is a false statement about the product rather than a degraded page.
+ * Collapsing them would tell a visitor no plans are offered when several are.
  */
 export async function Plans({ heading = true }: { heading?: boolean }) {
   let plans: InvestmentPlan[] = []
   let unavailable = false
 
   try {
-    plans = await listPublicPlans()
+    plans = await listPublicPlans('standard')
   } catch (error) {
-    // Logged so it reaches Vercel's runtime logs and any error reporter; the
-    // visitor gets a degraded section rather than a 500.
     console.error('[plans] could not load published plans:', error)
     unavailable = true
   }
+
 
   return (
     <Section id="investment-plans">
       <div className="container-x">
         {heading && (
           <SectionHeading
-            eyebrow="Investment Plans"
-            title="Choose the tier that fits how you invest"
-            description="Plans differ by the tools and support they include. Amounts, fees and durations are set by the operator and shown here once configured."
+            eyebrow="Choose Package"
+            title="A pricing offer for fast investment solution"
+            description="Each package sets its own rate, term and stake range. Every figure below is the term actually on offer — not an illustration."
             align="center"
             className="mx-auto max-w-2xl"
           />
         )}
 
         {unavailable ? (
-          <p className="mx-auto mt-12 max-w-lg rounded-xl border border-warn/30 bg-warn/[0.05] px-6 py-10 text-center text-sm leading-relaxed text-white/80">
+          <p className="mx-auto mt-12 max-w-lg rounded-xl border border-warn/30 bg-warn/[0.05] px-6 py-10 text-center text-sm leading-relaxed text-ink/80">
             Plan terms cannot be loaded right now. This is a temporary problem on our side, not a
             change to what is offered — please try again shortly.
           </p>
         ) : plans.length === 0 ? (
           <p className="mx-auto mt-12 max-w-lg rounded-xl border border-dashed border-line px-6 py-10 text-center text-sm leading-relaxed text-muted">
-            No plans are published yet. Terms are configured by the operator and will appear here
-            once they are.
+            No packages are published yet. Terms are configured by the operator and will appear
+            here once they are.
           </p>
         ) : (
-          <RevealGroup as="ul" className="mt-12 grid gap-5 lg:grid-cols-3">
+          <RevealGroup as="ul" className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {plans.map((plan) => (
-              <RevealItem as="li" key={plan.id}>
+              <RevealItem as="li" key={plan.id} className="flex">
                 <PlanCard plan={plan} />
               </RevealItem>
             ))}
           </RevealGroup>
         )}
 
-        <RiskNotice className="mx-auto mt-10 max-w-3xl">
-          <p>
-            A plan is a service tier, not a promise of performance. No plan on this platform offers
-            a guaranteed, fixed or risk-free return, and none is offered here. The value of digital
-            assets can fall as well as rise, you may get back less than you put in, and past
-            performance does not predict future results. Fees reduce returns. Consider independent
-            advice before investing.
-          </p>
-        </RiskNotice>
       </div>
     </Section>
   )

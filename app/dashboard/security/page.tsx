@@ -163,7 +163,7 @@ function TwoFactorDialog({
         <div className="space-y-5">
           <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-white/80">
+            <p className="text-sm leading-relaxed text-ink/80">
               Only hashes of these codes are stored, so nobody — including support — can show
               them to you again. Each works once. They are how you get back in if you lose your
               authenticator.
@@ -172,7 +172,7 @@ function TwoFactorDialog({
 
           <ul className="grid grid-cols-2 gap-2 rounded-xl border border-line bg-base-800 p-4">
             {codes.map((entry) => (
-              <li key={entry} className="num text-sm text-white">
+              <li key={entry} className="num text-sm text-ink">
                 {entry}
               </li>
             ))}
@@ -209,7 +209,7 @@ function TwoFactorDialog({
                 <p className="mb-2 text-xs uppercase tracking-wider text-muted">
                   Or enter this key manually
                 </p>
-                <p className="num break-all rounded-lg border border-line bg-base-800 p-3 text-sm text-white">
+                <p className="num break-all rounded-lg border border-line bg-base-800 p-3 text-sm text-ink">
                   {setup.secret}
                 </p>
               </div>
@@ -402,7 +402,7 @@ function DisableTwoFactorDialog({
       <div className="space-y-5">
         <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-          <p className="text-sm leading-relaxed text-white/80">
+          <p className="text-sm leading-relaxed text-ink/80">
             Without a second factor, anyone who learns your password can sign in. Turning this
             off is exactly what an attacker with a live session wants to do — which is why your
             password is asked for again.
@@ -514,7 +514,7 @@ export default function DashboardSecurityPage() {
               <p className="text-sm font-medium text-negative">
                 Could not load your security settings
               </p>
-              <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+              <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
               <Button variant="secondary" className="mt-4" onClick={() => void load()}>
                 Try again
               </Button>
@@ -534,7 +534,7 @@ export default function DashboardSecurityPage() {
       <div className="space-y-6 p-4 sm:p-6">
         <div className="grid gap-4 lg:grid-cols-2">
           {/* ---------- Two-factor ---------- */}
-          <Card>
+          <Card id="two-factor" className="scroll-mt-24">
             <CardHeader>
               <div>
                 <CardTitle>Two-factor authentication</CardTitle>
@@ -553,7 +553,7 @@ export default function DashboardSecurityPage() {
                 <SkeletonRows rows={2} />
               ) : (
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                     <Fingerprint className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <div className="min-w-0 flex-1">
@@ -563,7 +563,7 @@ export default function DashboardSecurityPage() {
                         : 'Withdrawals require two-factor authentication, so you will need this before you can move funds out.'}
                     </p>
                     {twoFactorOn && account.recoveryCodesRemaining <= 2 && (
-                      <p className="mt-2 rounded-lg border border-warn/30 bg-warn/[0.06] p-2.5 text-xs leading-relaxed text-white/80">
+                      <p className="mt-2 rounded-lg border border-warn/30 bg-warn/[0.06] p-2.5 text-xs leading-relaxed text-ink/80">
                         You are nearly out of recovery codes. Turn 2FA off and on again to issue a
                         fresh set before you lose access to your authenticator.
                       </p>
@@ -583,7 +583,7 @@ export default function DashboardSecurityPage() {
           </Card>
 
           {/* ---------- Password ---------- */}
-          <Card>
+          <Card id="password" className="scroll-mt-24">
             <CardHeader>
               <div>
                 <CardTitle>Password</CardTitle>
@@ -592,7 +592,7 @@ export default function DashboardSecurityPage() {
             </CardHeader>
             <CardBody>
               <div className="flex items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                   <KeyRound className="h-4 w-4" aria-hidden="true" />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -651,7 +651,7 @@ export default function DashboardSecurityPage() {
                       {sessions.map((session) => (
                         <Tr key={session.id}>
                           <Td>
-                            <span className="flex items-center gap-2.5 text-white">
+                            <span className="flex items-center gap-2.5 text-ink">
                               <Laptop className="h-4 w-4 text-muted" aria-hidden="true" />
                               {describeDevice(session.userAgent)}
                               {session.current && (
@@ -684,7 +684,7 @@ export default function DashboardSecurityPage() {
                   {sessions.map((session) => (
                     <MobileCard key={session.id}>
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-ink">
                           {describeDevice(session.userAgent)}
                         </p>
                         {session.current && <Badge tone="accent">this device</Badge>}
@@ -774,7 +774,7 @@ export default function DashboardSecurityPage() {
         <Card className="border-accent/25 bg-accent/[0.04]">
           <CardBody className="flex items-start gap-3">
             <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-white/75">
+            <p className="text-sm leading-relaxed text-ink/75">
               Nobody here will ever ask for your password, your two-factor codes or your recovery
               codes — not by email, not by phone, not in chat. Any such request is an attempt to
               take your account.

@@ -55,7 +55,7 @@ export function Tabs({
               size === 'sm' ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm',
               variant === 'pill' && 'rounded-lg',
               variant === 'underline' && 'pb-3',
-              active ? 'text-black' : 'text-muted hover:text-white',
+              active ? 'text-on-accent' : 'text-muted hover:text-ink',
               variant === 'underline' && active && 'text-accent',
             )}
           >
@@ -80,8 +80,8 @@ export function Tabs({
                   className={cn(
                     'rounded-full px-1.5 py-0.5 text-[10px] num',
                     active && variant === 'pill'
-                      ? 'bg-black/15 text-black'
-                      : 'bg-white/[0.08] text-muted',
+                      ? 'bg-black/15 text-on-accent'
+                      : 'bg-elevate/[0.08] text-muted',
                   )}
                 >
                   {item.count}

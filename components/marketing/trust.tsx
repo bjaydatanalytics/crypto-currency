@@ -10,7 +10,6 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/reveal'
 import { Section, SectionHeading } from '@/components/ui/section'
 import { companyInfo } from '@/lib/config'
@@ -99,14 +98,14 @@ export function Trust() {
           {items.map((item) => {
             const inner = (
               <Card interactive={Boolean(item.href)} className="flex h-full flex-col p-5">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                   <item.Icon className="h-4 w-4" aria-hidden="true" />
                 </span>
-                <h3 className="mt-4 text-sm font-semibold uppercase tracking-wide text-white">
+                <h3 className="mt-4 text-sm font-semibold uppercase tracking-wide text-ink">
                   {item.title}
                 </h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{item.body}</p>
-                {item.pending && <PendingInfo label={item.pending} className="mt-4 self-start" />}
+                
               </Card>
             )
 
@@ -126,7 +125,7 @@ export function Trust() {
 
         <Reveal className="mt-8">
           <Card className="p-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-white">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-ink">
               Regulatory status
             </h3>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">

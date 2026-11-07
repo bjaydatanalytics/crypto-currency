@@ -28,8 +28,8 @@ export default function RiskDisclosurePage() {
 
           <Reveal className="mt-10">
             <Prose>
-              <p className="rounded-xl border border-negative/25 bg-negative/[0.06] p-5 text-white/90">
-                <strong className="text-white">
+              <p className="rounded-xl border border-negative/25 bg-negative/[0.06] p-5 text-ink/90">
+                <strong className="text-ink">
                   You can lose some or all of the money you put in.
                 </strong>{' '}
                 Digital assets are high-risk and highly volatile. They are not suitable for
@@ -146,14 +146,6 @@ export default function RiskDisclosurePage() {
                 Consider carefully whether you understand how digital assets work and whether you
                 can afford the risk of losing your money. If you cannot answer both confidently, do
                 not invest.
-              </p>
-
-              <h2>Demonstration build</h2>
-              <p>
-                This deployment is a demonstration. Prices, balances, holdings, transactions and
-                investment records shown anywhere in the interface are sample data. They do not
-                reflect real markets or any real account, and trading, deposits and withdrawals are
-                disabled.
               </p>
             </Prose>
           </Reveal>

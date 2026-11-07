@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { LegalNotice, PageHeader, Prose } from '@/components/layout/page-header'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { Reveal } from '@/components/ui/reveal'
 import { Section } from '@/components/ui/section'
 import { brand } from '@/lib/config'
@@ -35,7 +34,7 @@ export default function PrivacyPage() {
                 with a representative or Data Protection Officer where one is required.
               </p>
               <p>
-                <PendingInfo label="Data controller identity and DPO contact" />
+                
               </p>
 
               <h2>2. What data is collected</h2>
@@ -88,7 +87,7 @@ export default function PrivacyPage() {
                 must be named before launch, along with what it receives.
               </p>
               <p>
-                <PendingInfo label="List of processors and sub-processors" />
+                
               </p>
               <p>Personal data is not sold.</p>
 
@@ -99,7 +98,7 @@ export default function PrivacyPage() {
                 described here.
               </p>
               <p>
-                <PendingInfo label="Transfer mechanisms and destination countries" />
+                
               </p>
 
               <h2>6. How long it is kept</h2>
@@ -110,7 +109,7 @@ export default function PrivacyPage() {
                 retention schedule must be confirmed against the law of each jurisdiction served.
               </p>
               <p>
-                <PendingInfo label="Retention schedule per data category" />
+                
               </p>
 
               <h2>7. Your rights</h2>
@@ -136,7 +135,7 @@ export default function PrivacyPage() {
                 and must not be set before consent is given where consent is required.
               </p>
               <p>
-                <PendingInfo label="Cookie inventory and consent mechanism" />
+                
               </p>
 
               <h2>9. Security</h2>
@@ -156,16 +155,6 @@ export default function PrivacyPage() {
               <p>
                 This policy may be updated. The effective date of the current version will be shown
                 here and material changes will be notified.
-              </p>
-              <p>
-                <PendingInfo label="Version and effective date" />
-              </p>
-
-              <h2>Demonstration build</h2>
-              <p>
-                This deployment is a demonstration running on sample data. It has no backend, no
-                database and no user accounts, and therefore collects and stores no personal data.
-                Form submissions are validated in the browser and are not transmitted anywhere.
               </p>
             </Prose>
           </Reveal>

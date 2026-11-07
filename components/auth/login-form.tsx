@@ -101,7 +101,7 @@ export function LoginForm() {
       {notice && (
         <p
           role="status"
-          className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-white/80"
+          className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-ink/80"
         >
           {notice} You can still{' '}
           <AuthLink href="/dashboard">open the demo dashboard</AuthLink> to explore the interface

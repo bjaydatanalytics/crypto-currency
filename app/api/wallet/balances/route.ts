@@ -3,7 +3,7 @@ import { db } from '@/db'
 import { assets } from '@/db/schema'
 import { ok, withErrorHandling } from '@/lib/server/api'
 import { listUserDepositAddresses } from '@/lib/server/deposit-addresses'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { getUserBalances } from '@/lib/server/ledger'
 import { getMarketQuotes } from '@/lib/server/market-service'
 
@@ -16,7 +16,7 @@ import { getMarketQuotes } from '@/lib/server/market-service'
  * empty state standing in for missing data.
  */
 export const GET = withErrorHandling(async () => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const [balances, assetRows, market, depositAddresses] = await Promise.all([

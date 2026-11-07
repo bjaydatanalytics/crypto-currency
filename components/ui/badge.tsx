@@ -4,7 +4,7 @@ import type { InvestmentStatus, TransactionStatus, VerificationStatus } from '@/
 type Tone = 'neutral' | 'accent' | 'success' | 'warn' | 'danger' | 'info'
 
 const tones: Record<Tone, string> = {
-  neutral: 'bg-white/[0.06] text-muted border-line',
+  neutral: 'bg-elevate/[0.06] text-muted border-line',
   accent: 'bg-accent/12 text-accent border-accent/25',
   success: 'bg-positive/12 text-positive border-positive/25',
   warn: 'bg-warn/12 text-warn border-warn/25',
@@ -59,11 +59,3 @@ export function StatusBadge({
   )
 }
 
-/** Persistent marker for simulated data. Used wherever sample figures appear. */
-export function DemoBadge({ className, label = 'Demo data' }: { className?: string; label?: string }) {
-  return (
-    <Badge tone="warn" className={cn('normal-case tracking-normal', className)}>
-      {label}
-    </Badge>
-  )
-}

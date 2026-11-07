@@ -7,14 +7,14 @@ import {
   parseBody,
   withErrorHandling,
 } from '@/lib/server/api'
-import { requireKycVerified, requireVerifiedUser } from '@/lib/server/guard'
+import { requireKycVerified, requireUser } from '@/lib/server/guard'
 import { InvestmentError, listUserInvestments, subscribeToPlan } from '@/lib/server/investments'
 import { getRequestContext } from '@/lib/server/session'
 import { investmentQuerySchema, subscribeToPlanSchema } from '@/lib/server/validation'
 
 /** GET — the signed-in user's own contracts. */
 export const GET = withErrorHandling(async (request: Request) => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const url = new URL(request.url)

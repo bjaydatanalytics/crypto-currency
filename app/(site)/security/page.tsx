@@ -12,7 +12,6 @@ import { PageHeader } from '@/components/layout/page-header'
 import { Cta } from '@/components/marketing/cta'
 import { ButtonLink } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/reveal'
 import { Section, SectionHeading } from '@/components/ui/section'
 
@@ -123,16 +122,16 @@ export default function SecurityPage() {
             {areas.map((area) => (
               <RevealItem as="li" key={area.title}>
                 <Card className="flex h-full flex-col p-6">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                     <area.Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
-                  <h2 className="mt-5 text-base font-semibold uppercase tracking-wide text-white">
+                  <h2 className="mt-5 text-base font-semibold uppercase tracking-wide text-ink">
                     {area.title}
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{area.body}</p>
                   <ul className="mt-5 flex-1 space-y-2.5">
                     {area.points.map((point) => (
-                      <li key={point} className="flex gap-2.5 text-sm text-white/75">
+                      <li key={point} className="flex gap-2.5 text-sm text-ink/75">
                         <span
                           className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-accent"
                           aria-hidden="true"
@@ -181,16 +180,16 @@ export default function SecurityPage() {
                   ],
                 ].map(([title, body]) => (
                   <li key={title} className="border-b border-line pb-4 last:border-0 last:pb-0">
-                    <p className="font-medium text-white">{title}</p>
+                    <p className="font-medium text-ink">{title}</p>
                     <p className="mt-1.5">{body}</p>
                   </li>
                 ))}
               </ul>
 
               <div className="mt-6 flex flex-wrap gap-3 border-t border-line pt-5">
-                <PendingInfo label="Security audit report" />
-                <PendingInfo label="Custody provider and arrangements" />
-                <PendingInfo label="Incident response and disclosure policy" />
+                
+                
+                
               </div>
             </Card>
           </Reveal>
@@ -225,7 +224,7 @@ export default function SecurityPage() {
             ].map(([title, body]) => (
               <RevealItem as="li" key={title}>
                 <Card className="h-full p-5">
-                  <h3 className="text-sm font-semibold text-white">{title}</h3>
+                  <h3 className="text-sm font-semibold text-ink">{title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
                 </Card>
               </RevealItem>

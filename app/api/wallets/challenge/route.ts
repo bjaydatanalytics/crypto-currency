@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { ok, badRequest, parseBody, tooManyRequests, withErrorHandling } from '@/lib/server/api'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { RULES, checkRateLimit } from '@/lib/server/rate-limit'
 import { createChallenge, isValidEvmAddress, normaliseAddress } from '@/lib/server/wallets/proof'
 import { walletChainEnum } from '@/db/wallet-schema'
@@ -20,7 +20,7 @@ const challengeSchema = z.object({
  * free storage for anyone who wants to fill the table.
  */
 export const POST = withErrorHandling(async (request: Request) => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const limit = await checkRateLimit(`wallet-challenge:${guard.user.id}`, RULES.twoFactor)

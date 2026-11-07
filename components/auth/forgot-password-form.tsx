@@ -29,7 +29,12 @@ export function ForgotPasswordForm() {
     setNotice(
       data.sent
         ? 'If an account exists for that address, a reset link has been sent.'
-        : 'No email was sent: this demonstration build has no mail service connected. Wire the auth service to a backend to enable password resets.',
+        /*
+         * Only reached when the send genuinely failed. It still says so —
+         * reporting success here would leave someone waiting for a reset
+         * link that is never coming.
+         */
+        : 'No email could be sent just now, so no reset link is on its way. Please try again shortly or contact support.',
     )
   }
 
@@ -54,7 +59,7 @@ export function ForgotPasswordForm() {
       {notice && (
         <p
           role="status"
-          className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-white/80"
+          className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-ink/80"
         >
           {notice}
         </p>

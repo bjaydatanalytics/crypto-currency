@@ -18,30 +18,23 @@ export type GuardResult =
   | { ok: true; user: User; sessionId: string }
   | { ok: false; response: NextResponse }
 
+/**
+ * Requires a signed-in account.
+ *
+ * There was a second guard here, `requireVerifiedUser`, which additionally
+ * required a confirmed email address. Email verification has been removed
+ * from the product — registration stamps `emailVerifiedAt` immediately — so
+ * the two guards had become the same check, and keeping both would have left
+ * a function whose name promised an assurance it no longer made. Every call
+ * site now uses this one.
+ *
+ * `requireKycVerified` below is unaffected and still gates anything that
+ * moves money.
+ */
 export async function requireUser(): Promise<GuardResult> {
   const session = await getCurrentSession()
   if (!session) return { ok: false, response: unauthorized() }
   return { ok: true, user: session.user, sessionId: session.sessionId }
-}
-
-/**
- * Requires a verified email address.
- *
- * Applied to anything that acts on the account rather than merely reading it,
- * so an unverified address cannot be used to take actions on someone else's
- * behalf.
- */
-export async function requireVerifiedUser(): Promise<GuardResult> {
-  const result = await requireUser()
-  if (!result.ok) return result
-
-  if (!result.user.emailVerifiedAt) {
-    return {
-      ok: false,
-      response: forbidden('Confirm your email address before continuing.'),
-    }
-  }
-  return result
 }
 
 /** Requires an admin role. Checked against the database row, not a cookie claim. */
@@ -64,7 +57,7 @@ export async function requireAdmin(): Promise<GuardResult> {
  * without it.
  */
 export async function requireKycVerified(): Promise<GuardResult> {
-  const result = await requireVerifiedUser()
+  const result = await requireUser()
   if (!result.ok) return result
 
   if (result.user.kycStatus !== 'verified') {

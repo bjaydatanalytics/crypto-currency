@@ -3,7 +3,6 @@ import { PageHeader } from '@/components/layout/page-header'
 import { Cta } from '@/components/marketing/cta'
 import { Plans } from '@/components/marketing/plans'
 import { Card } from '@/components/ui/card'
-import { PendingInfo, RiskNotice } from '@/components/ui/demo-notice'
 import { Reveal } from '@/components/ui/reveal'
 import { Section, SectionHeading } from '@/components/ui/section'
 import {
@@ -58,10 +57,12 @@ export default function PricingPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Pricing"
-        title="Fees, in full and in one place"
-        description="Every charge that can apply to your account is listed below. Rates are set by the operator and have not yet been supplied — no figure appears here until it is the real one."
+        eyebrow="Investment Packages"
+        title="Choose the package that fits how you invest"
+        description="Each package below states its rate, its term and the stake it accepts. The full fee schedule follows underneath, because a rate means little without the charges that reduce it."
       />
+
+      <Plans />
 
       <Section>
         <div className="container-x">
@@ -84,7 +85,7 @@ export default function PricingPage() {
                   <Tbody>
                     {feeRows.map((row) => (
                       <Tr key={row.item} interactive>
-                        <Td className="font-medium text-white">{row.item}</Td>
+                        <Td className="font-medium text-ink">{row.item}</Td>
                         <Td className="text-muted">{row.basis}</Td>
                         <Td numeric>
                           {row.rate ?? (
@@ -99,35 +100,30 @@ export default function PricingPage() {
             </Card>
           </Reveal>
 
-          <Reveal className="mt-6 flex flex-wrap items-center gap-3">
-            <PendingInfo label="Complete fee schedule with rates" />
-            <PendingInfo label="Third-party payment processor charges" />
-          </Reveal>
-
           <Reveal className="mt-8">
             <Card className="p-6">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-white">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink">
                 What else affects the price you get
               </h3>
               <ul className="mt-4 space-y-3 text-sm leading-relaxed text-muted">
                 <li className="flex gap-2.5">
                   <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
                   <span>
-                    <strong className="font-medium text-white">Spread.</strong> The gap between the
+                    <strong className="font-medium text-ink">Spread.</strong> The gap between the
                     buy and sell price is a cost even where no fee is charged.
                   </span>
                 </li>
                 <li className="flex gap-2.5">
                   <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
                   <span>
-                    <strong className="font-medium text-white">Slippage.</strong> Fast-moving
+                    <strong className="font-medium text-ink">Slippage.</strong> Fast-moving
                     markets can fill an order at a worse price than the one displayed.
                   </span>
                 </li>
                 <li className="flex gap-2.5">
                   <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
                   <span>
-                    <strong className="font-medium text-white">Network fees.</strong> Blockchain
+                    <strong className="font-medium text-ink">Network fees.</strong> Blockchain
                     transaction costs are set by the network, vary with congestion, and are not
                     refundable.
                   </span>
@@ -135,7 +131,7 @@ export default function PricingPage() {
                 <li className="flex gap-2.5">
                   <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
                   <span>
-                    <strong className="font-medium text-white">Tax.</strong> You are responsible
+                    <strong className="font-medium text-ink">Tax.</strong> You are responsible
                     for any tax arising from your activity. The platform does not provide tax
                     advice.
                   </span>
@@ -145,12 +141,6 @@ export default function PricingPage() {
           </Reveal>
         </div>
       </Section>
-
-      <Plans />
-
-      <div className="container-x pb-16">
-        <RiskNotice className="mx-auto max-w-3xl" />
-      </div>
 
       <Cta />
     </>

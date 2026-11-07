@@ -3,26 +3,15 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, LogOut, Menu, Search, Settings, ShieldCheck, User, X } from 'lucide-react'
+import { Menu, Settings, ShieldCheck, User, X } from 'lucide-react'
 import { Dropdown, DropdownItem, DropdownSeparator } from '@/components/ui/dropdown'
-import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
 import { accountInitials, accountName, useAccount } from './account-provider'
+import { LogoutButton } from './logout-button'
 import { SidebarContent } from './sidebar'
 
 export function DashboardHeader({ title }: { title: string }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const account = useAccount()
-
-  /**
-   * No unread count, because there is no notification store.
-   *
-   * This previously counted unread items in mock data, so every account showed
-   * the same invented badge — a number that told the user something had
-   * happened when nothing had. A badge that is always wrong is worse than no
-   * badge, so there is none until notifications are real.
-   */
-  const unread = 0
 
   useEffect(() => {
     if (!drawerOpen) return
@@ -35,60 +24,25 @@ export function DashboardHeader({ title }: { title: string }) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-line bg-base-800/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-line bg-base-800">
         <div className="flex h-[68px] items-center gap-3 px-4 sm:px-6">
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
             aria-label="Open navigation menu"
-            className="-ml-1 rounded-lg p-2 text-muted transition-colors hover:bg-white/5 hover:text-white lg:hidden"
+            className="-ml-1 rounded-lg p-2 text-muted transition-colors hover:bg-elevate/5 hover:text-ink lg:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
 
-          <h1 className="truncate text-base font-semibold text-white sm:text-lg">{title}</h1>
-
-          <Badge tone="warn" className="ml-1 hidden shrink-0 normal-case tracking-normal sm:inline-flex">
-            Demo
-          </Badge>
+          <h1 className="truncate text-base font-semibold text-ink sm:text-lg">{title}</h1>
 
           <div className="ml-auto flex items-center gap-1 sm:gap-2">
-            <Link
-              href="/dashboard/markets"
-              aria-label="Search markets"
-              className="rounded-lg p-2.5 text-muted transition-colors hover:bg-white/5 hover:text-white"
-            >
-              <Search className="h-[18px] w-[18px]" />
-            </Link>
-
-            <Dropdown
-              label="Notifications"
-              trigger={
-                <span className="relative rounded-lg p-2.5 text-muted transition-colors hover:bg-white/5 hover:text-white">
-                  <Bell className="h-[18px] w-[18px]" />
-                  {unread > 0 && (
-                    <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-semibold text-black">
-                      {unread}
-                    </span>
-                  )}
-                </span>
-              }
-              menuClassName="w-[320px] max-w-[calc(100vw-2rem)] p-0"
-            >
-              <div className="border-b border-line px-4 py-3">
-                <p className="text-sm font-medium text-white">Notifications</p>
-              </div>
-              <p className="px-4 py-6 text-center text-sm leading-relaxed text-muted">
-                No notifications. Account and money-movement alerts are sent by email — see
-                your preferences on the profile page.
-              </p>
-            </Dropdown>
-
             <Dropdown
               label="Account menu"
               trigger={
                 <span
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/12 text-xs font-semibold text-accent transition-colors hover:bg-accent/20"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-xs font-semibold text-on-accent transition-colors hover:bg-accent-bright"
                   aria-hidden="true"
                 >
                   {accountInitials(account)}
@@ -98,7 +52,7 @@ export function DashboardHeader({ title }: { title: string }) {
               {(close) => (
                 <>
                   <div className="px-3 py-2.5">
-                    <p className="truncate text-sm font-medium text-white">
+                    <p className="truncate text-sm font-medium text-ink">
                       {accountName(account)}
                     </p>
                     <p className="truncate text-xs text-muted">
@@ -116,9 +70,7 @@ export function DashboardHeader({ title }: { title: string }) {
                     <DropdownItem icon={<Settings className="h-4 w-4" />}>Settings</DropdownItem>
                   </Link>
                   <DropdownSeparator />
-                  <Link href="/" onClick={close}>
-                    <DropdownItem icon={<LogOut className="h-4 w-4" />}>Logout</DropdownItem>
-                  </Link>
+                  <LogoutButton onDone={close} className="px-3 py-2" />
                 </>
               )}
             </Dropdown>
@@ -153,7 +105,7 @@ export function DashboardHeader({ title }: { title: string }) {
                 type="button"
                 onClick={() => setDrawerOpen(false)}
                 aria-label="Close navigation menu"
-                className="absolute right-3 top-4 z-10 rounded-lg p-2 text-muted transition-colors hover:bg-white/5 hover:text-white"
+                className="absolute right-3 top-4 z-10 rounded-lg p-2 text-muted transition-colors hover:bg-elevate/5 hover:text-ink"
               >
                 <X className="h-4 w-4" />
               </button>

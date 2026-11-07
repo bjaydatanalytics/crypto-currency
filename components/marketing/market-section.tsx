@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { MarketGrid } from '@/components/markets/market-grid'
-import { DemoInline } from '@/components/ui/demo-notice'
 import { Section, SectionHeading } from '@/components/ui/section'
 
 export function MarketSection() {
@@ -26,10 +25,7 @@ export function MarketSection() {
           </Link>
         </div>
 
-        <DemoInline
-          className="mt-5"
-          text="Prices below are simulated sample data, not live market rates."
-        />
+        
 
         <MarketGrid
           className="mt-6"

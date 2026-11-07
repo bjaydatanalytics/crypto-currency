@@ -83,7 +83,7 @@ export function HeroVisual() {
               <Wallet className="h-4 w-4" aria-hidden="true" />
             </span>
             <div>
-              <p className="text-sm font-medium text-white">Portfolio overview</p>
+              <p className="text-sm font-medium text-ink">Portfolio overview</p>
               <p className="text-[11px] text-muted">Sample data · not a real account</p>
             </div>
           </div>
@@ -97,7 +97,7 @@ export function HeroVisual() {
         <div className="px-5 pt-5">
           <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Total value</p>
           <div className="mt-1.5 flex flex-wrap items-end gap-3">
-            <span className="num text-[clamp(1.75rem,5vw,2.5rem)] font-semibold leading-none text-white">
+            <span className="num text-[clamp(1.75rem,5vw,2.5rem)] font-semibold leading-none text-ink">
               {formatCurrency(portfolio.totalValue)}
             </span>
             <ChangePill value={portfolio.changePercent24h} className="mb-0.5" />
@@ -122,7 +122,7 @@ export function HeroVisual() {
                 size="sm"
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-white">{quote.symbol}</p>
+                <p className="truncate text-sm font-medium text-ink">{quote.symbol}</p>
                 <p className="truncate text-[11px] text-muted">{quote.name}</p>
               </div>
               <Sparkline
@@ -133,7 +133,7 @@ export function HeroVisual() {
                 className="hidden shrink-0 sm:block"
               />
               <div className="shrink-0 text-right">
-                <p className="num text-sm text-white">{formatCurrency(quote.price)}</p>
+                <p className="num text-sm text-ink">{formatCurrency(quote.price)}</p>
                 <ChangePill
                   value={quote.changePercent24h}
                   showBackground={false}
@@ -173,7 +173,7 @@ export function HeroVisual() {
             Market move
           </span>
         </div>
-        <p className="num mt-2 text-xl font-semibold text-white">+2.41%</p>
+        <p className="num mt-2 text-xl font-semibold text-ink">+2.41%</p>
         <p className="mt-0.5 text-[11px] text-muted">BTC · 24 hours</p>
         <Sparkline data={marketQuotes[0].sparkline} width={144} height={26} className="mt-2" />
       </FloatingCard>
@@ -187,7 +187,7 @@ export function HeroVisual() {
           <ArrowUpRight className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
           <span className="text-[10px] uppercase tracking-[0.14em]">Trading volume</span>
         </div>
-        <p className="num mt-2 text-xl font-semibold text-white">$28.4B</p>
+        <p className="num mt-2 text-xl font-semibold text-ink">$28.4B</p>
         <p className="mt-0.5 text-[11px] text-muted">24h across sample markets</p>
         <div className="mt-3 flex h-8 items-end gap-1" aria-hidden="true">
           {[42, 58, 35, 72, 48, 88, 64, 95, 55, 78].map((h, i) => (
@@ -213,10 +213,10 @@ export function HeroVisual() {
           {portfolio.holdings.slice(0, 3).map((holding) => (
             <li key={holding.symbol}>
               <div className="flex items-center justify-between text-[10px]">
-                <span className="text-white/85">{holding.symbol}</span>
+                <span className="text-ink/85">{holding.symbol}</span>
                 <span className="num text-muted">{holding.allocation}%</span>
               </div>
-              <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/[0.07]">
+              <div className="mt-1 h-1 overflow-hidden rounded-full bg-elevate/[0.07]">
                 <div
                   className="h-full rounded-full bg-accent"
                   style={{ width: `${Math.min(holding.allocation, 100)}%` }}

@@ -45,9 +45,10 @@ import { formatDate } from '@/lib/utils'
  *    cannot tell which without being shown.
  * 2. **Why a refusal happened.** Rejecting requires a written reason, because
  *    the person refused is entitled to know.
- * 3. **Whether the customer can actually deposit.** KYC alone is not enough —
- *    email verification gates it too. Approving KYC and still seeing "cannot
- *    deposit" is confusing unless the screen explains it.
+ * 3. **Whether the customer can actually deposit.** Shown as its own column
+ *    rather than inferred from the KYC badge, so that if another gate is ever
+ *    added, approving KYC and still seeing "cannot deposit" is visible here
+ *    rather than reported as a bug.
  */
 
 const VERIFICATION_TONES: Record<string, 'success' | 'warn' | 'danger' | 'neutral'> = {
@@ -106,9 +107,7 @@ function DecisionDialog({
         title: decision === 'verified' ? 'Verification approved' : 'Verification rejected',
         description:
           decision === 'verified'
-            ? user.emailVerified
-              ? `${user.name} can now deposit.`
-              : `${user.name} is approved, but still cannot deposit until they confirm their email address.`
+            ? `${user.name} can now deposit.`
             : `${user.name} has been refused, with your reason on record.`,
       })
       onDone()
@@ -137,7 +136,7 @@ function DecisionDialog({
       {user && decision && (
         <div className="space-y-5">
           <div className="rounded-xl border border-line p-4">
-            <p className="text-sm font-medium text-white">{user.name}</p>
+            <p className="text-sm font-medium text-ink">{user.name}</p>
             <p className="text-sm text-muted">{user.email}</p>
           </div>
 
@@ -157,7 +156,7 @@ function DecisionDialog({
                 }
                 aria-hidden="true"
               />
-              <div className="text-sm leading-relaxed text-white/80">
+              <div className="text-sm leading-relaxed text-ink/80">
                 {neverSubmitted ? (
                   <>
                     <p className="font-medium text-negative">
@@ -192,7 +191,7 @@ function DecisionDialog({
                   <dt className="shrink-0 text-xs uppercase tracking-wider text-muted sm:w-28">
                     {label}
                   </dt>
-                  <dd className="num min-w-0 break-all text-sm text-white">{value}</dd>
+                  <dd className="num min-w-0 break-all text-sm text-ink">{value}</dd>
                 </div>
               ))}
             </dl>
@@ -329,7 +328,7 @@ export function UserReview({ currentAdminId }: { currentAdminId?: string }) {
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-negative">Could not load users</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
           </div>
         </CardBody>
       </Card>
@@ -412,7 +411,7 @@ export function UserReview({ currentAdminId }: { currentAdminId?: string }) {
                       const self = user.id === currentAdminId
                       return (
                         <Tr key={user.id}>
-                          <Td className="font-medium text-white">
+                          <Td className="font-medium text-ink">
                             {user.name}
                             {user.role === 'admin' && (
                               <Badge tone="accent" className="ml-2">
@@ -420,12 +419,7 @@ export function UserReview({ currentAdminId }: { currentAdminId?: string }) {
                               </Badge>
                             )}
                           </Td>
-                          <Td className="text-muted">
-                            {user.email}
-                            {!user.emailVerified && (
-                              <span className="block text-xs text-warn">email unconfirmed</span>
-                            )}
-                          </Td>
+                          <Td className="text-muted">{user.email}</Td>
                           <Td>
                             <Badge tone={VERIFICATION_TONES[user.verification] ?? 'neutral'}>
                               {user.verification}
@@ -513,7 +507,7 @@ export function UserReview({ currentAdminId }: { currentAdminId?: string }) {
                     <MobileCard key={user.id}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-medium text-white">{user.name}</p>
+                          <p className="truncate text-sm font-medium text-ink">{user.name}</p>
                           <p className="truncate text-xs text-muted">{user.email}</p>
                         </div>
                         <Badge tone={VERIFICATION_TONES[user.verification] ?? 'neutral'}>
@@ -528,10 +522,6 @@ export function UserReview({ currentAdminId }: { currentAdminId?: string }) {
                           }
                         />
                         <MobileRow label="Can deposit" value={user.canDeposit ? 'yes' : 'no'} />
-                        <MobileRow
-                          label="Email"
-                          value={user.emailVerified ? 'confirmed' : 'unconfirmed'}
-                        />
                         <MobileRow
                           label="Status"
                           value={

@@ -109,11 +109,11 @@ function DestinationBlock({ withdrawal }: { withdrawal: WithdrawalRow }) {
           {copied ? 'Copied' : 'Copy'}
         </button>
       </div>
-      <p className="num break-all text-sm leading-relaxed text-white">
+      <p className="num break-all text-sm leading-relaxed text-ink">
         {withdrawal.destinationAddress}
       </p>
       {withdrawal.destinationTag && (
-        <p className="num mt-2 break-all rounded-lg border border-warn/30 bg-warn/[0.06] p-2.5 text-sm text-white">
+        <p className="num mt-2 break-all rounded-lg border border-warn/30 bg-warn/[0.06] p-2.5 text-sm text-ink">
           tag: {withdrawal.destinationTag}
         </p>
       )}
@@ -199,7 +199,7 @@ function ActionDialog({
       {withdrawal && mode && (
         <div className="space-y-5">
           <div className="rounded-xl border border-line p-4">
-            <p className="num text-lg font-semibold text-white">
+            <p className="num text-lg font-semibold text-ink">
               {withdrawal.amount} {withdrawal.assetSymbol}
             </p>
             <p className="mt-1 text-sm text-muted">
@@ -212,7 +212,7 @@ function ActionDialog({
           {mode === 'approve' && (
             <div className="flex items-start gap-3 rounded-xl border border-accent/25 bg-accent/[0.06] p-4">
               <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-              <p className="text-sm leading-relaxed text-white/80">
+              <p className="text-sm leading-relaxed text-ink/80">
                 <span className="font-medium text-accent">This sends nothing.</span> Approving
                 records that you checked the request and the destination. You then make the
                 payment yourself and come back to record the transaction hash. Until you do, the
@@ -225,7 +225,7 @@ function ActionDialog({
             <>
               <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
                 <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-                <p className="text-sm leading-relaxed text-white/80">
+                <p className="text-sm leading-relaxed text-ink/80">
                   Only record this <span className="font-medium text-warn">after</span> the
                   payment has actually been sent. Settling first shows the customer a completed
                   withdrawal for money still sitting in the business account.
@@ -325,7 +325,7 @@ export function WithdrawalReview() {
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-negative">Could not load withdrawals</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
           </div>
         </CardBody>
       </Card>
@@ -383,10 +383,10 @@ export function WithdrawalReview() {
                       <Tr key={row.id}>
                         <Td className="text-muted">{formatDate(row.requestedAt)}</Td>
                         <Td>
-                          <span className="text-white">{row.userName}</span>
+                          <span className="text-ink">{row.userName}</span>
                           <span className="block text-xs text-muted">{row.userEmail}</span>
                         </Td>
-                        <Td numeric className="num text-white">
+                        <Td numeric className="num text-ink">
                           {row.amount} {row.assetSymbol}
                         </Td>
                         <Td>
@@ -445,7 +445,7 @@ export function WithdrawalReview() {
                 {withdrawals.map((row) => (
                   <MobileCard key={row.id}>
                     <div className="flex items-center justify-between gap-3">
-                      <p className="num text-sm font-medium text-white">
+                      <p className="num text-sm font-medium text-ink">
                         {row.amount} {row.assetSymbol}
                       </p>
                       <Badge tone={STATUS_TONES[row.status] ?? 'neutral'}>

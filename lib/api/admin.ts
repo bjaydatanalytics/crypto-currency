@@ -113,7 +113,7 @@ export interface AdminUserRecord {
   kycProvider: string | null
   kycProviderReference: string | null
   kycRejectionReason: string | null
-  /** True only when KYC *and* email verification both pass. */
+  /** True when the account has cleared every gate on funding — currently KYC. */
   canDeposit: boolean
 }
 

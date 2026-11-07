@@ -37,8 +37,16 @@ export interface AuthResponse {
 
 export interface RegisterResponse {
   registered: boolean
-  /** 'unavailable' means no confirmation email was actually dispatched. */
-  emailDelivery?: 'sent' | 'unavailable'
+  /**
+   * True when a session was issued and the caller is now signed in.
+   *
+   * There is no email-confirmation step, so a successful registration signs
+   * the account in immediately. It is false when the address was already
+   * registered — that case still reports `registered: true`, so that this
+   * endpoint cannot be used to discover who holds an account, and the form
+   * must send them to sign in rather than to the dashboard.
+   */
+  authenticated?: boolean
   message: string
   demo?: boolean
 }
@@ -61,6 +69,7 @@ export async function register(payload: RegisterPayload): Promise<ApiResult<Regi
     () => request<RegisterResponse>('/auth/register', { method: 'POST', body: payload }),
     () => ({
       registered: false,
+      authenticated: false,
       demo: true,
       message: 'Demo environment — no account was created.',
     }),
@@ -73,22 +82,6 @@ export async function requestPasswordReset(email: string): Promise<ApiResult<{ s
     () => request<{ sent: boolean; demo: boolean }>('/auth/forgot-password', { method: 'POST', body: { email } }),
     () => ({ sent: false, demo: true }),
     600,
-  )
-}
-
-export async function verifyEmail(token: string): Promise<ApiResult<{ verified: boolean; demo: boolean }>> {
-  return withFallback(
-    () => request<{ verified: boolean; demo: boolean }>('/auth/verify-email', { method: 'POST', body: { token } }),
-    () => ({ verified: false, demo: true }),
-    500,
-  )
-}
-
-export async function resendVerification(email: string): Promise<ApiResult<{ sent: boolean; demo: boolean }>> {
-  return withFallback(
-    () => request<{ sent: boolean; demo: boolean }>('/auth/resend-verification', { method: 'POST', body: { email } }),
-    () => ({ sent: false, demo: true }),
-    500,
   )
 }
 

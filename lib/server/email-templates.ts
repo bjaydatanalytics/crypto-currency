@@ -106,30 +106,6 @@ const SECURITY_FOOTER =
 
 /* ------------------------------------------------------------------ */
 
-export function verificationEmail(link: string): RenderedEmail {
-  return {
-    subject: 'Confirm your email address',
-    html: layout({
-      heading: 'Confirm your email address',
-      body: `<p style="margin:0;">Confirm this address to finish setting up your ${escapeHtml(brand.name)} account.</p>`,
-      cta: { label: 'Confirm email address', url: link },
-      footnote:
-        'This link expires in 24 hours and can be used once. If you did not create an account, ignore this message — no account will be activated.',
-    }),
-    text: [
-      'Confirm your email address',
-      '',
-      `Confirm this address to finish setting up your ${brand.name} account:`,
-      link,
-      '',
-      'This link expires in 24 hours and can be used once.',
-      'If you did not create an account, ignore this message.',
-      '',
-      SECURITY_FOOTER,
-    ].join('\n'),
-  }
-}
-
 export function passwordResetEmail(link: string): RenderedEmail {
   return {
     subject: 'Reset your password',

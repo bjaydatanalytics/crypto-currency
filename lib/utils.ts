@@ -32,6 +32,21 @@ export function formatCurrency(
   }).format(value)
 }
 
+/**
+ * A money amount with no currency symbol — "1,250.00", not "$1,250.00".
+ *
+ * The customer panel writes the currency as a separate, de-emphasised word
+ * after the figure ("1,250.00 USD"), so the symbol would be a second, louder
+ * statement of the same thing. Always two decimals: a balance that renders as
+ * "1,250" reads like a rounded estimate rather than an exact amount.
+ */
+export function formatMoney(value: number) {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
 export function formatNumber(value: number, maximumFractionDigits = 2) {
   return new Intl.NumberFormat('en-US', { maximumFractionDigits }).format(value)
 }

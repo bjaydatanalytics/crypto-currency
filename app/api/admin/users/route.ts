@@ -95,11 +95,11 @@ export const GET = withErrorHandling(async (request: Request) => {
       /**
        * Whether this account can actually deposit.
        *
-       * Both gates must pass — `requireKycVerified` checks email verification
-       * *and* KYC. Surfacing it here stops an admin approving KYC, seeing
-       * "verified", and not understanding why the customer still cannot fund.
+       * KYC is the only gate now that email verification has been removed from
+       * the product. Kept as its own field rather than inferred in the client,
+       * so if another gate is added later every admin screen picks it up.
        */
-      canDeposit: row.kycStatus === 'verified' && Boolean(row.emailVerifiedAt),
+      canDeposit: row.kycStatus === 'verified',
     })),
     page,
     pageSize,

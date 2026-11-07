@@ -9,6 +9,21 @@ export interface SelectOption {
   label: string
 }
 
+/**
+ * Marks a field the form will not submit without.
+ *
+ * Rendered from the control's own `required` attribute rather than a separate
+ * prop, so the visual marker and the browser's validation can never disagree.
+ */
+function RequiredMark() {
+  return (
+    <span className="ml-0.5 text-negative" title="Required">
+      <span aria-hidden="true">*</span>
+      <span className="sr-only">(required)</span>
+    </span>
+  )
+}
+
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string
   hint?: string
@@ -30,8 +45,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={selectId} className="mb-2 block text-sm font-medium text-white/90">
+        <label htmlFor={selectId} className="mb-2 block text-sm font-medium text-ink/90">
           {label}
+          {props.required && <RequiredMark />}
         </label>
       )}
       <div className="relative">
@@ -40,7 +56,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           id={selectId}
           aria-invalid={error ? true : undefined}
           className={cn(
-            'w-full appearance-none rounded-xl border border-line bg-base-800 px-4 py-3 pr-11 text-sm text-white transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-50',
+            'w-full appearance-none rounded-xl border border-line bg-base-800 px-4 py-3 pr-11 text-sm text-ink transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-50',
             error && 'border-negative/60',
             className,
           )}

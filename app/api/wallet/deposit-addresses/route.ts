@@ -3,7 +3,7 @@ import { db } from '@/db'
 import { assets } from '@/db/schema'
 import { ok, withErrorHandling } from '@/lib/server/api'
 import { listUserDepositAddresses } from '@/lib/server/deposit-addresses'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 
 /**
  * Every deposit address issued to the signed-in user.
@@ -11,7 +11,7 @@ import { requireVerifiedUser } from '@/lib/server/guard'
  * Powers the deposit screen's asset list in one round trip, so it can show at a
  * glance which assets can be funded and which cannot.
  *
- * Deliberately weaker than the per-asset endpoint: `requireVerifiedUser` rather
+ * Deliberately weaker than the per-asset endpoint: `requireUser` rather
  * than `requireKycVerified`, because listing which assets *have* an address is
  * not the same as handing someone a destination to send funds to. The addresses
  * themselves still only ever belong to the caller — the query is scoped by
@@ -21,7 +21,7 @@ import { requireVerifiedUser } from '@/lib/server/guard'
  * client a second request for symbols and names.
  */
 export const GET = withErrorHandling(async () => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const addresses = await listUserDepositAddresses(guard.user.id)

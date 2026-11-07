@@ -5,14 +5,20 @@ import { forwardRef } from 'react'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger' | 'success'
+type Variant = 'primary' | 'secondary' | 'navy' | 'ghost' | 'outline' | 'danger' | 'success'
 type Size = 'sm' | 'md' | 'lg'
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-accent text-black hover:bg-accent-bright shadow-glow-sm hover:shadow-glow font-semibold',
-  secondary: 'bg-white/[0.06] text-white hover:bg-white/[0.12] border border-line',
-  ghost: 'text-muted hover:text-white hover:bg-white/[0.06]',
+    'bg-accent text-on-accent hover:bg-accent-bright shadow-glow-sm hover:shadow-glow font-semibold',
+  secondary: 'bg-elevate/[0.06] text-ink hover:bg-elevate/[0.12] border border-line',
+  /**
+   * Solid deep navy, identical in both themes — the paired action next to a
+   * `primary` button (Withdraw beside Deposit). Its label stays literally white
+   * because the fill is always dark, regardless of the surrounding theme.
+   */
+  navy: 'bg-navy text-white hover:bg-navy-soft font-semibold',
+  ghost: 'text-muted hover:text-ink hover:bg-elevate/[0.06]',
   outline: 'border border-accent/40 text-accent hover:bg-accent/10 hover:border-accent/70',
   danger: 'bg-negative/15 text-negative border border-negative/30 hover:bg-negative/25',
   success: 'bg-positive/15 text-positive border border-positive/30 hover:bg-positive/25',

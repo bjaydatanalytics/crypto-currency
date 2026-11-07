@@ -422,6 +422,18 @@ export type SupportMessage = typeof supportMessages.$inferSelect
 export const planTierEnum = pgEnum('plan_tier', ['starter', 'advanced', 'pro'])
 
 /**
+ * Which catalogue a plan belongs to.
+ *
+ * The panel sells two separate products from one table: the general investment
+ * plans, and the retirement (401k) plans, which have their own page and their
+ * own longer terms. They are distinguished by this column rather than by a
+ * naming convention on the id, so a renamed plan cannot silently move between
+ * catalogues — and so the "list me the 401k plans" query is a real filter the
+ * database can index, not a string match.
+ */
+export const planCategoryEnum = pgEnum('plan_category', ['standard', 'retirement'])
+
+/**
  * How a plan's rate should be read.
  *
  * Not cosmetic. "5%" on a 30-day plan means wildly different things as a
@@ -454,6 +466,8 @@ export const investmentPlans = pgTable(
     /** Stable slug, e.g. "plan_starter". Referenced by subscriptions later. */
     id: varchar('id', { length: 32 }).primaryKey(),
     tier: planTierEnum('tier').notNull(),
+    /** Defaults to `standard` so every existing plan keeps its current meaning. */
+    category: planCategoryEnum('category').notNull().default('standard'),
 
     name: varchar('name', { length: 64 }).notNull(),
     summary: text('summary').notNull(),

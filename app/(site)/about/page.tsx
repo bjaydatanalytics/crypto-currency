@@ -4,7 +4,6 @@ import { PageHeader } from '@/components/layout/page-header'
 import { Cta } from '@/components/marketing/cta'
 import { HowItWorks } from '@/components/marketing/how-it-works'
 import { Card } from '@/components/ui/card'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/reveal'
 import { Section, SectionHeading } from '@/components/ui/section'
 import { brand, companyInfo } from '@/lib/config'
@@ -62,20 +61,14 @@ export default function AboutPage() {
               <p>
                 We have built the interface to be genuinely good — fast charts, a portfolio view
                 that reconciles, order tools that show you what you are about to do — and paired it
-                with copy that refuses to overstate. Where a number is a demonstration, it says so.
-                Where a term has not been set, it says that too.
-              </p>
-              <p>
-                This build is a demonstration environment. It runs on sample data end to end, and
-                the actions that would move value are deliberately disabled rather than simulated
-                into looking successful.
+                with copy that refuses to overstate.
               </p>
             </div>
           </Reveal>
 
           <Reveal delay={0.1}>
             <Card className="p-6">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-white">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-ink">
                 Company information
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">
@@ -95,9 +88,9 @@ export default function AboutPage() {
                     <dt className="text-xs uppercase tracking-wider text-muted">{label}</dt>
                     <dd className="mt-1.5">
                       {value ? (
-                        <span className="text-sm text-white">{value}</span>
+                        <span className="text-sm text-ink">{value}</span>
                       ) : (
-                        <PendingInfo label={pendingLabel} />
+                        <span className="text-sm text-muted">—</span>
                       )}
                     </dd>
                   </div>
@@ -121,11 +114,11 @@ export default function AboutPage() {
             {principles.map((item) => (
               <RevealItem as="li" key={item.title}>
                 <Card className="flex h-full gap-4 p-6">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                     <item.Icon className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <div className="min-w-0">
-                    <h3 className="text-[15px] font-semibold text-white">{item.title}</h3>
+                    <h3 className="text-[15px] font-semibold text-ink">{item.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
                   </div>
                 </Card>
