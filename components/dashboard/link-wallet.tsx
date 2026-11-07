@@ -120,7 +120,7 @@ export function LinkWalletDialog({
       <div className="space-y-5">
         <div className="flex items-start gap-3 rounded-xl border border-accent/25 bg-accent/[0.06] p-4">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-          <div className="text-sm leading-relaxed text-white/80">
+          <div className="text-sm leading-relaxed text-ink/80">
             <p className="font-medium text-accent">This is read-only</p>
             <p className="mt-1">
               Signing proves the address is yours. It moves no funds, costs no gas and gives us
@@ -168,14 +168,14 @@ export function LinkWalletDialog({
             <p className="mb-2 text-xs uppercase tracking-wider text-muted">
               Message you are signing
             </p>
-            <pre className="max-h-40 overflow-auto rounded-xl border border-line bg-base-800 p-3.5 text-[11px] leading-relaxed text-white/70">
+            <pre className="max-h-40 overflow-auto rounded-xl border border-line bg-base-800 p-3.5 text-[11px] leading-relaxed text-ink/70">
               {message}
             </pre>
           </div>
         )}
 
         {!hasWallet && (
-          <p className="flex items-start gap-2.5 rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-white/80">
+          <p className="flex items-start gap-2.5 rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-ink/80">
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warn" aria-hidden="true" />
             No browser wallet detected. You can still request the message, but signing needs a
             wallet extension such as MetaMask or Rabby.
@@ -210,10 +210,10 @@ export function LinkWalletDialog({
 export function NoWalletsEmptyState({ onLink }: { onLink: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-line px-6 py-14 text-center">
-      <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-muted">
+      <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-muted">
         <Wallet className="h-5 w-5" aria-hidden="true" />
       </span>
-      <h3 className="text-base font-medium text-white">No wallets linked</h3>
+      <h3 className="text-base font-medium text-ink">No wallets linked</h3>
       <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted">
         Link a wallet to see its balance here. You keep your keys — linking is read-only and can
         be undone at any time.

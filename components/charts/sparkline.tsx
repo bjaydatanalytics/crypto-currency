@@ -1,7 +1,7 @@
 'use client'
 
 import { useId, useMemo } from 'react'
-import { chartColors } from '@/lib/chart-theme'
+import { useChartTheme } from '@/lib/chart-theme'
 
 /**
  * Sparkline drawn as inline SVG rather than a charting library.
@@ -25,7 +25,8 @@ export function Sparkline({
   className?: string
 }) {
   const gradientId = useId().replace(/:/g, '')
-  const color = positive ? chartColors.positive : chartColors.negative
+  const [ref, theme] = useChartTheme<SVGSVGElement>()
+  const color = positive ? theme.positive : theme.negative
 
   const { linePath, areaPath } = useMemo(() => {
     if (data.length < 2) return { linePath: '', areaPath: '' }
@@ -56,6 +57,7 @@ export function Sparkline({
 
   return (
     <svg
+      ref={ref}
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}

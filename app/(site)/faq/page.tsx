@@ -59,7 +59,7 @@ export default function FaqPage() {
 
           <Reveal delay={0.1} className="lg:sticky lg:top-28 lg:self-start">
             <Card className="p-6">
-              <h2 className="text-base font-semibold text-white">Still have a question?</h2>
+              <h2 className="text-base font-semibold text-ink">Still have a question?</h2>
               <p className="mt-2.5 text-sm leading-relaxed text-muted">
                 Support can answer questions about your account, verification and the platform.
                 They cannot tell you what to invest in — no one at {brand.name} gives investment
@@ -73,7 +73,7 @@ export default function FaqPage() {
               </Link>
 
               <div className="mt-6 border-t border-line pt-5">
-                <h3 id="api" className="scroll-mt-28 text-sm font-semibold text-white">
+                <h3 id="api" className="scroll-mt-28 text-sm font-semibold text-ink">
                   API and documentation
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">

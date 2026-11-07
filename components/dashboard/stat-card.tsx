@@ -35,13 +35,13 @@ export function StatCard({
           {info && <InfoTip content={info} />}
         </div>
         {icon && (
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-line bg-white/[0.03] text-accent">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-line bg-elevate/[0.03] text-accent">
             {icon}
           </span>
         )}
       </div>
 
-      <p className="num mt-3 text-[clamp(1.375rem,3.4vw,1.75rem)] font-semibold leading-none tracking-tight text-white">
+      <p className="num mt-3 text-[clamp(1.375rem,3.4vw,1.75rem)] font-semibold leading-none tracking-tight text-ink">
         {value}
       </p>
 

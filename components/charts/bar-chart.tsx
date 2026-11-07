@@ -1,7 +1,7 @@
 'use client'
 
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { axisProps, chartColors } from '@/lib/chart-theme'
+import { axisPropsFor, useChartTheme } from '@/lib/chart-theme'
 import type { PricePoint } from '@/lib/types'
 import { formatCompact, formatDate } from '@/lib/utils'
 import { ChartTooltip } from './chart-tooltip'
@@ -13,7 +13,7 @@ import { ChartTooltip } from './chart-tooltip'
 export function VolumeBarChart({
   data,
   height = 240,
-  color = chartColors.accent,
+  color,
   valueFormatter = (v: number) => formatCompact(v),
   ariaLabel,
   labelFormatter,
@@ -25,11 +25,15 @@ export function VolumeBarChart({
   ariaLabel: string
   labelFormatter?: (label: string) => string
 }) {
+  const [ref, theme] = useChartTheme()
+  const axisProps = axisPropsFor(theme)
+  const fill = color ?? theme.accent
+
   return (
-    <div role="img" aria-label={ariaLabel} style={{ width: '100%', height }}>
+    <div ref={ref} role="img" aria-label={ariaLabel} style={{ width: '100%', height }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barCategoryGap="28%">
-          <CartesianGrid stroke={chartColors.grid} vertical={false} />
+          <CartesianGrid stroke={theme.grid} vertical={false} />
           <XAxis
             dataKey="time"
             {...axisProps}
@@ -41,11 +45,11 @@ export function VolumeBarChart({
           <YAxis {...axisProps} width={52} tickFormatter={(value: number) => formatCompact(value)} />
           <Tooltip
             content={<ChartTooltip valueFormatter={valueFormatter} labelFormatter={labelFormatter} />}
-            cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+            cursor={{ fill: theme.grid }}
           />
           <Bar
             dataKey="value"
-            fill={color}
+            fill={fill}
             radius={[4, 4, 0, 0]}
             isAnimationActive
             animationDuration={700}

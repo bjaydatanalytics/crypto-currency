@@ -24,7 +24,7 @@ export const faqItems: FaqItem[] = [
   {
     question: 'How do I create an account?',
     answer:
-      'Choose Create Account, enter your name, email and a password, and accept the terms. You will then be asked to confirm your email address before continuing.',
+      'Choose Create Account, enter your name, email and a password, and accept the terms. Your account is ready straight away — identity checks are only needed before you deposit or withdraw.',
   },
   {
     question: 'How does verification work?',

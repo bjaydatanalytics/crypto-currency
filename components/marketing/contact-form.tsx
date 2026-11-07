@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card'
 import { Checkbox, Input, Textarea } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { useToast } from '@/components/ui/toast'
+import { brand } from '@/lib/config'
 
 const topics = [
   { value: 'account', label: 'Account and access' },
@@ -58,16 +59,18 @@ export function ContactForm() {
     if (Object.keys(nextErrors).length > 0) return
 
     setSubmitting(true)
-    // No endpoint exists yet — surface that honestly instead of faking success.
+    // No endpoint exists yet. Still reported as a failure rather than faked:
+    // someone who believes they have contacted support will wait rather than
+    // try another channel.
     window.setTimeout(() => {
       setSubmitting(false)
       setNotice(
-        'This form is not connected to a support inbox in this demonstration build, so your message was not sent. Wire it to a backend endpoint or a ticketing provider before launch.',
+        `This form is not connected to a support inbox yet, so your message was not sent. Please email ${brand.email} instead.`,
       )
       toast({
         tone: 'warn',
         title: 'Message not sent',
-        description: 'No support inbox is connected in this demo build.',
+        description: `Please email ${brand.email} instead.`,
       })
     }, 700)
   }
@@ -111,7 +114,7 @@ export function ContactForm() {
         {notice && (
           <p
             role="status"
-            className="rounded-lg border border-warn/25 bg-warn/[0.07] p-4 text-sm leading-relaxed text-white/80"
+            className="rounded-lg border border-warn/25 bg-warn/[0.07] p-4 text-sm leading-relaxed text-ink/80"
           >
             {notice}
           </p>

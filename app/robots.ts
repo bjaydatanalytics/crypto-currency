@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         // Private areas: no value to a crawler, and admin must never be indexed.
-        disallow: ['/dashboard', '/admin', '/login', '/register', '/forgot-password', '/verify-email'],
+        disallow: ['/dashboard', '/admin', '/login', '/register', '/forgot-password'],
       },
     ],
     sitemap: `${brand.url}/sitemap.xml`,

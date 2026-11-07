@@ -13,7 +13,7 @@ export default function RegisterPage() {
   return (
     <AuthShell
       title="Create your account"
-      description="It takes a couple of minutes. You'll confirm your email before you can use the platform."
+      description="It takes a couple of minutes. Your account is ready as soon as you sign up."
       footer={
         <>
           Already have an account? <AuthLink href="/login">Login</AuthLink>

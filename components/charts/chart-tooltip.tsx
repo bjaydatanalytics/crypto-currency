@@ -39,7 +39,7 @@ export function ChartTooltip({
               style={{ backgroundColor: entry.color }}
               aria-hidden="true"
             />
-            <span className="num text-sm font-medium text-white">
+            <span className="num text-sm font-medium text-ink">
               {valueFormatter(Number(entry.value))}
             </span>
           </div>

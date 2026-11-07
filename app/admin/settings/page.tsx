@@ -4,7 +4,6 @@ import { AdminNotice } from '@/components/admin/admin-notice'
 import { AdminShell } from '@/components/admin/admin-shell'
 import { Button } from '@/components/ui/button'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { Checkbox, Input, Textarea } from '@/components/ui/input'
 import { useToast } from '@/components/ui/toast'
 import { brand, companyInfo, platform } from '@/lib/config'
@@ -40,7 +39,7 @@ export default function AdminSettingsPage() {
               <Textarea label="Description" defaultValue={brand.description} />
               <p className="text-xs leading-relaxed text-muted">
                 In this build these values live in{' '}
-                <code className="text-white/80">lib/config.ts</code>. Editing that one file
+                <code className="text-ink/80">lib/config.ts</code>. Editing that one file
                 rebrands the entire product.
               </p>
               <Button type="submit" size="sm">
@@ -93,7 +92,7 @@ export default function AdminSettingsPage() {
                 hint="Name the regulator and the reference number so a visitor can verify it on the regulator's own register. Leave empty if there is no authorisation — an empty field is published as 'no regulatory claim', which is accurate."
               />
 
-              <div className="rounded-xl border border-negative/25 bg-negative/[0.06] p-4 text-sm leading-relaxed text-white/75">
+              <div className="rounded-xl border border-negative/25 bg-negative/[0.06] p-4 text-sm leading-relaxed text-ink/75">
                 <p className="font-medium text-negative">Do not enter anything unverified here</p>
                 <p className="mt-1.5">
                   A licence number, registration or approval published without a matching entry on
@@ -117,7 +116,7 @@ export default function AdminSettingsPage() {
             <div className="space-y-4">
               <div className="flex items-start justify-between gap-4 rounded-xl border border-line bg-base-800 p-4">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-white">Demo mode</p>
+                  <p className="text-sm font-medium text-ink">Demo mode</p>
                   <p className="mt-1 text-sm leading-relaxed text-muted">
                     Currently{' '}
                     <span className={platform.demoMode ? 'text-warn' : 'text-positive'}>
@@ -125,35 +124,35 @@ export default function AdminSettingsPage() {
                     </span>
                     . While on, every value-moving action is refused and the demonstration banner is
                     shown site-wide. Controlled by{' '}
-                    <code className="text-white/80">NEXT_PUBLIC_DEMO_MODE</code>.
+                    <code className="text-ink/80">NEXT_PUBLIC_DEMO_MODE</code>.
                   </p>
                 </div>
               </div>
 
               <div className="rounded-xl border border-line bg-base-800 p-4">
-                <p className="text-sm font-medium text-white">Backend endpoints</p>
+                <p className="text-sm font-medium text-ink">Backend endpoints</p>
                 <dl className="mt-3 space-y-2 text-sm">
                   <div className="flex flex-wrap justify-between gap-2">
                     <dt className="text-muted">API base URL</dt>
-                    <dd className="num text-white/90">
+                    <dd className="num text-ink/90">
                       {platform.apiBaseUrl || 'Not configured — using mock data'}
                     </dd>
                   </div>
                   <div className="flex flex-wrap justify-between gap-2">
                     <dt className="text-muted">Live market data</dt>
-                    <dd className="num text-white/90">
+                    <dd className="num text-ink/90">
                       {platform.liveMarketData ? 'Enabled' : 'Off — using mock feed'}
                     </dd>
                   </div>
                   <div className="flex flex-wrap justify-between gap-2">
                     <dt className="text-muted">Custody</dt>
-                    <dd className="num text-white/90">
+                    <dd className="num text-ink/90">
                       {platform.custodyEnabled ? 'Enabled' : 'Off — deposits unavailable'}
                     </dd>
                   </div>
                   <div className="flex flex-wrap justify-between gap-2">
                     <dt className="text-muted">Trading</dt>
-                    <dd className="num text-white/90">
+                    <dd className="num text-ink/90">
                       {platform.tradingEnabled ? 'Enabled' : 'Off — orders unavailable'}
                     </dd>
                   </div>
@@ -188,7 +187,7 @@ export default function AdminSettingsPage() {
               ))}
             </div>
             <div className="mt-5">
-              <PendingInfo label="All items above" />
+              
             </div>
           </CardBody>
         </Card>

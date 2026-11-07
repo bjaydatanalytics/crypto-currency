@@ -1,8 +1,8 @@
 import 'server-only'
-import { asc, eq } from 'drizzle-orm'
+import { and, asc, eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { investmentPlans, type InvestmentPlanRow } from '@/db/schema'
-import type { InvestmentPlan, PlanTier } from '@/lib/types'
+import type { InvestmentPlan, PlanCategory, PlanTier } from '@/lib/types'
 import { AuditAction, recordAudit } from './audit'
 import type { RequestContext } from './session'
 
@@ -44,6 +44,7 @@ function toPublicPlan(row: InvestmentPlanRow): InvestmentPlan {
   return {
     id: row.id,
     tier: row.tier as PlanTier,
+    category: row.category as PlanCategory,
     name: row.name,
     summary: row.summary,
     minimumAmount: toNumber(row.minimumAmount),
@@ -81,11 +82,15 @@ function toAdminPlan(row: InvestmentPlanRow): AdminPlan {
  * Filtered to published rows in the query itself rather than in the caller, so
  * a new consumer cannot forget the filter and leak a draft.
  */
-export async function listPublicPlans(): Promise<InvestmentPlan[]> {
+export async function listPublicPlans(category?: PlanCategory): Promise<InvestmentPlan[]> {
   const rows = await db
     .select()
     .from(investmentPlans)
-    .where(eq(investmentPlans.published, true))
+    .where(
+      category === undefined
+        ? eq(investmentPlans.published, true)
+        : and(eq(investmentPlans.published, true), eq(investmentPlans.category, category)),
+    )
     .orderBy(asc(investmentPlans.displayOrder), asc(investmentPlans.name))
 
   return rows.map(toPublicPlan)
@@ -113,6 +118,7 @@ export async function listAllPlans(): Promise<AdminPlan[]> {
 
 export interface PlanInput {
   tier: PlanTier
+  category: PlanCategory
   name: string
   summary: string
   minimumAmount: number | null
@@ -172,6 +178,7 @@ export async function createPlan(
     .values({
       id,
       tier: input.tier,
+      category: input.category,
       name: input.name,
       summary: input.summary,
       minimumAmount: toDecimal(input.minimumAmount, 2),
@@ -247,6 +254,8 @@ export async function updatePlan(
     .update(investmentPlans)
     .set({
       ...(input.tier !== undefined && { tier: input.tier }),
+      // Moving a plan between catalogues changes which customer page shows it.
+      ...(input.category !== undefined && { category: input.category }),
       ...(input.name !== undefined && { name: input.name }),
       ...(input.summary !== undefined && { summary: input.summary }),
       ...(input.minimumAmount !== undefined && {

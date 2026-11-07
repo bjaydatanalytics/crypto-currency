@@ -253,7 +253,7 @@ function Thread({
                     }
                   >
                     <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-medium text-white">
+                      <span className="text-xs font-medium text-ink">
                         {message.internal
                           ? 'Internal note'
                           : fromSupport
@@ -270,7 +270,7 @@ function Thread({
                         {relativeTime(message.createdAt)}
                       </span>
                     </div>
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-white/85">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink/85">
                       {message.body}
                     </p>
                   </li>
@@ -304,14 +304,14 @@ function Thread({
                 onChange={(event) => setInternal(event.target.checked)}
                 className="mt-0.5 h-4 w-4 shrink-0 accent-[color:var(--accent,#B8FF00)]"
               />
-              <span className="text-sm leading-relaxed text-white/80">
+              <span className="text-sm leading-relaxed text-ink/80">
                 Internal note — not shown to the customer, no email sent, and the ticket stays in
                 &quot;needs reply&quot;.
               </span>
             </label>
 
             {internal && (
-              <p className="flex items-start gap-2.5 rounded-lg border border-warn/30 bg-warn/[0.07] p-3 text-xs leading-relaxed text-white/80">
+              <p className="flex items-start gap-2.5 rounded-lg border border-warn/30 bg-warn/[0.07] p-3 text-xs leading-relaxed text-ink/80">
                 <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warn" aria-hidden="true" />
                 This will be saved as a private note. Untick the box above if you meant to answer
                 the customer.
@@ -356,7 +356,7 @@ function Thread({
         <Card>
           <CardBody className="flex items-start gap-3">
             <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
-            <div className="text-sm leading-relaxed text-white/75">
+            <div className="text-sm leading-relaxed text-ink/75">
               <p>
                 This ticket is closed and accepts no further messages. Reopen it to continue, so
                 that &quot;closed, then said more&quot; stays visible in the record.
@@ -428,7 +428,7 @@ export function SupportQueue({ currentAdminId }: { currentAdminId?: string }) {
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-negative">Could not load the support queue</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
           </div>
         </CardBody>
       </Card>
@@ -492,14 +492,14 @@ export function SupportQueue({ currentAdminId }: { currentAdminId?: string }) {
                 <Tbody>
                   {tickets.map((ticket) => (
                     <Tr key={ticket.id} interactive onClick={() => setOpenId(ticket.id)}>
-                      <Td className="font-medium text-white">
+                      <Td className="font-medium text-ink">
                         {ticket.subject}
                         <span className="block text-xs text-muted">
                           {ticket.messageCount} message{ticket.messageCount === 1 ? '' : 's'}
                         </span>
                       </Td>
                       <Td>
-                        <span className="text-white/90">{ticket.userName}</span>
+                        <span className="text-ink/90">{ticket.userName}</span>
                         <span className="block text-xs text-muted">{ticket.userEmail}</span>
                       </Td>
                       <Td className="capitalize text-muted">{ticket.category}</Td>
@@ -525,7 +525,7 @@ export function SupportQueue({ currentAdminId }: { currentAdminId?: string }) {
               {tickets.map((ticket) => (
                 <MobileCard key={ticket.id} onClick={() => setOpenId(ticket.id)}>
                   <div className="flex items-start justify-between gap-3">
-                    <p className="min-w-0 truncate text-sm font-medium text-white">
+                    <p className="min-w-0 truncate text-sm font-medium text-ink">
                       {ticket.subject}
                     </p>
                     <Badge tone={STATUS_TONES[ticket.status]} dot>

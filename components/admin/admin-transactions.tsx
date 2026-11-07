@@ -159,7 +159,7 @@ export function AdminTransactions({
               {items.map((tx) => (
                 <MobileCard key={tx.id}>
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-medium capitalize text-white">
+                    <p className="text-sm font-medium capitalize text-ink">
                       {tx.type} · {tx.symbol}
                     </p>
                     <StatusBadge status={tx.status} />

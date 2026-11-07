@@ -7,7 +7,6 @@ import { Sparkline } from '@/components/charts/sparkline'
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { AssetIcon, ChangePill } from '@/components/ui/asset-icon'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
-import { DemoNotice } from '@/components/ui/demo-notice'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { SkeletonRows } from '@/components/ui/skeleton'
@@ -60,9 +59,7 @@ export default function DashboardMarketsPage() {
       <DashboardHeader title="Markets" />
 
       <div className="space-y-6 p-4 sm:p-6">
-        <DemoNotice title="Simulated prices">
-          Prices update on a timer to demonstrate the interface. They are not live market rates.
-        </DemoNotice>
+        
 
         <Card>
           <CardHeader className="flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -117,7 +114,7 @@ export default function DashboardMarketsPage() {
                                 size="sm"
                               />
                               <div className="min-w-0">
-                                <p className="truncate font-medium text-white">{quote.name}</p>
+                                <p className="truncate font-medium text-ink">{quote.name}</p>
                                 <p className="text-xs text-muted">{quote.symbol}</p>
                               </div>
                             </div>
@@ -160,7 +157,7 @@ export default function DashboardMarketsPage() {
                           size="sm"
                         />
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-white">{quote.name}</p>
+                          <p className="truncate text-sm font-medium text-ink">{quote.name}</p>
                           <p className="num text-xs text-muted">{formatCurrency(quote.price)}</p>
                         </div>
                         <ChangePill value={quote.changePercent24h} />

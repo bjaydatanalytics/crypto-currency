@@ -3,7 +3,7 @@ import { db } from '@/db'
 import { linkedWallets } from '@/db/wallet-schema'
 import { notFound, ok, withErrorHandling } from '@/lib/server/api'
 import { AuditAction, recordAudit } from '@/lib/server/audit'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { getRequestContext } from '@/lib/server/session'
 
 /**
@@ -18,7 +18,7 @@ import { getRequestContext } from '@/lib/server/session'
  */
 export const DELETE = withErrorHandling(
   async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
-    const guard = await requireVerifiedUser()
+    const guard = await requireUser()
     if (!guard.ok) return guard.response
 
     const { id } = await params

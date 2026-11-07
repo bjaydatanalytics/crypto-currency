@@ -245,14 +245,14 @@ function Thread({ ticketId, onBack }: { ticketId: string; onBack: () => void }) 
                         }
                       >
                         <div className="mb-2 flex items-center gap-2">
-                          <span className="text-xs font-medium text-white">
+                          <span className="text-xs font-medium text-ink">
                             {fromSupport ? 'Support' : 'You'}
                           </span>
                           <span className="ml-auto text-xs text-muted">
                             {relativeTime(message.createdAt)}
                           </span>
                         </div>
-                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-white/85">
+                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink/85">
                           {message.body}
                         </p>
                       </li>
@@ -284,7 +284,7 @@ function Thread({ ticketId, onBack }: { ticketId: string; onBack: () => void }) 
               <Card>
                 <CardBody className="flex items-start gap-3">
                   <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
-                  <p className="text-sm leading-relaxed text-white/75">
+                  <p className="text-sm leading-relaxed text-ink/75">
                     This ticket is closed. Open a new one if you need anything else — mention this
                     subject and support can find the earlier conversation.
                   </p>
@@ -372,10 +372,10 @@ export default function SupportPage() {
                         <button
                           type="button"
                           onClick={() => setOpenId(ticket.id)}
-                          className="w-full rounded-xl border border-line bg-base-800 p-4 text-left transition-colors hover:border-accent/30 hover:bg-white/[0.03]"
+                          className="w-full rounded-xl border border-line bg-base-800 p-4 text-left transition-colors hover:border-accent/30 hover:bg-elevate/[0.03]"
                         >
                           <div className="flex items-start justify-between gap-3">
-                            <p className="min-w-0 truncate text-sm font-medium text-white">
+                            <p className="min-w-0 truncate text-sm font-medium text-ink">
                               {ticket.subject}
                             </p>
                             <Badge tone={STATUS_TONES[ticket.status]} dot>
@@ -396,7 +396,7 @@ export default function SupportPage() {
 
             <Card className="border-accent/25 bg-accent/[0.04]">
               <CardBody>
-                <p className="text-sm leading-relaxed text-white/75">
+                <p className="text-sm leading-relaxed text-ink/75">
                   Support will never ask for your password, your two-factor codes or your recovery
                   codes, and will never ask you to move funds to a different address. Any message
                   that does is not from us.

@@ -136,7 +136,7 @@ export default function AdminOverviewPage() {
               <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
               <div>
                 <p className="text-sm font-medium text-negative">Could not load the overview</p>
-                <p className="mt-1 text-sm leading-relaxed text-white/75">{error}</p>
+                <p className="mt-1 text-sm leading-relaxed text-ink/75">{error}</p>
                 <Button variant="secondary" size="sm" className="mt-3" onClick={() => void load()}>
                   Try again
                 </Button>
@@ -150,7 +150,7 @@ export default function AdminOverviewPage() {
           <Card className="border-negative/40 bg-negative/[0.08]">
             <CardBody className="flex items-start gap-3">
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-negative" aria-hidden="true" />
-              <div className="text-sm leading-relaxed text-white/85">
+              <div className="text-sm leading-relaxed text-ink/85">
                 <p className="font-semibold text-negative">The ledger does not balance</p>
                 <p className="mt-1.5">
                   Entries were written outside <code>postTransaction</code>, so the books no longer
@@ -173,7 +173,7 @@ export default function AdminOverviewPage() {
           <Card className="border-negative/40 bg-negative/[0.06]">
             <CardBody className="flex items-start gap-3">
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-negative" aria-hidden="true" />
-              <div className="text-sm leading-relaxed text-white/85">
+              <div className="text-sm leading-relaxed text-ink/85">
                 <p className="font-semibold text-negative">
                   You have promised more than the treasury holds
                 </p>
@@ -223,7 +223,7 @@ export default function AdminOverviewPage() {
                   className="mt-0.5 h-5 w-5 shrink-0 text-positive"
                   aria-hidden="true"
                 />
-                <div className="text-sm leading-relaxed text-white/80">
+                <div className="text-sm leading-relaxed text-ink/80">
                   <p className="font-medium text-positive">Nothing is waiting</p>
                   <p className="mt-1">
                     No deposits to credit, no withdrawals to pay, no verifications or tickets
@@ -247,17 +247,17 @@ export default function AdminOverviewPage() {
                         className={
                           item.urgent
                             ? 'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-warn/12 text-warn'
-                            : 'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04] text-muted'
+                            : 'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-elevate/[0.04] text-muted'
                         }
                       >
                         {item.icon}
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="flex items-baseline gap-2">
-                          <span className="num text-xl font-semibold text-white">
+                          <span className="num text-xl font-semibold text-ink">
                             {item.count}
                           </span>
-                          <span className="text-sm font-medium text-white/90">{item.label}</span>
+                          <span className="text-sm font-medium text-ink/90">{item.label}</span>
                         </span>
                         <span className="mt-0.5 block text-xs leading-relaxed text-muted">
                           {item.hint}
@@ -310,7 +310,7 @@ export default function AdminOverviewPage() {
                       {stat.icon}
                       <span className="text-xs uppercase tracking-wider">{stat.label}</span>
                     </div>
-                    <p className="num mt-2 text-2xl font-semibold text-white">{stat.value}</p>
+                    <p className="num mt-2 text-2xl font-semibold text-ink">{stat.value}</p>
                     <p className="mt-1 text-xs leading-relaxed text-muted">{stat.hint}</p>
                   </CardBody>
                 </Card>
@@ -342,8 +342,8 @@ export default function AdminOverviewPage() {
                   <Tbody>
                     {data.treasury.positions.map((position) => (
                       <Tr key={position.assetId}>
-                        <Td className="text-white">{position.symbol}</Td>
-                        <Td numeric className="num text-white">
+                        <Td className="text-ink">{position.symbol}</Td>
+                        <Td numeric className="num text-ink">
                           {trimZeros(position.balance)}
                         </Td>
                         <Td numeric className="num text-muted">
@@ -389,7 +389,7 @@ export default function AdminOverviewPage() {
                   <Tbody>
                     {data.recentUsers.map((user) => (
                       <Tr key={user.id}>
-                        <Td className="font-medium text-white">{user.name}</Td>
+                        <Td className="font-medium text-ink">{user.name}</Td>
                         <Td className="text-muted">{user.email}</Td>
                         <Td>
                           <StatusBadge
@@ -411,7 +411,7 @@ export default function AdminOverviewPage() {
         {/* ---------- Honest note on what is still missing ---------- */}
         <Card>
           <CardBody>
-            <h2 className="text-sm font-semibold text-white">Controls not yet in place</h2>
+            <h2 className="text-sm font-semibold text-ink">Controls not yet in place</h2>
             <p className="mt-1.5 text-xs leading-relaxed text-muted">
               Authentication, role checks on every route, and an append-only audit log of
               administrative actions are implemented. These are not:

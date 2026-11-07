@@ -36,7 +36,7 @@ export function Footer() {
 
           {Object.entries(footerNav).map(([heading, links]) => (
             <nav key={heading} aria-label={heading}>
-              <h2 className="text-xs font-medium uppercase tracking-[0.16em] text-white">
+              <h2 className="text-xs font-medium uppercase tracking-[0.16em] text-ink">
                 {heading}
               </h2>
               <ul className="mt-4 space-y-2.5">
@@ -53,23 +53,6 @@ export function Footer() {
               </ul>
             </nav>
           ))}
-        </div>
-
-        {/* Risk statement sits above the fold of the footer, not buried in the fine print */}
-        <div className="mt-12 rounded-2xl border border-line bg-surface p-5">
-          <h2 className="text-sm font-medium text-white">Risk warning</h2>
-          <p className="mt-2 text-xs leading-relaxed text-muted">
-            Digital assets are highly volatile and largely unregulated in many jurisdictions. The
-            value of your holdings can fall as well as rise and you may get back less than you put
-            in. Past performance does not predict future results. Nothing on this website
-            constitutes investment, tax or legal advice, and no return is guaranteed. Consider
-            taking independent advice and only commit money you can afford to lose.
-          </p>
-          <p className="mt-3 text-xs leading-relaxed text-muted">
-            This build is a demonstration environment. Market prices, balances, transactions and
-            portfolio figures shown throughout are sample data and do not represent real markets or
-            real account activity.
-          </p>
         </div>
 
         <div className="mt-8 flex flex-col gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">

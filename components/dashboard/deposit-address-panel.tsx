@@ -81,8 +81,8 @@ function CopyField({
       <p
         className={
           emphasis
-            ? 'num break-all rounded-xl border border-warn/30 bg-warn/[0.06] p-3.5 text-sm leading-relaxed text-white'
-            : 'num break-all rounded-xl border border-line bg-base-800 p-3.5 text-sm leading-relaxed text-white'
+            ? 'num break-all rounded-xl border border-warn/30 bg-warn/[0.06] p-3.5 text-sm leading-relaxed text-ink'
+            : 'num break-all rounded-xl border border-line bg-base-800 p-3.5 text-sm leading-relaxed text-ink'
         }
       >
         {value}
@@ -136,7 +136,7 @@ function AddressQr({ value }: { value: string }) {
   }
 
   if (!dataUrl) {
-    return <div className="h-[180px] w-[180px] shrink-0 animate-pulse rounded-xl bg-white/[0.04]" />
+    return <div className="h-[180px] w-[180px] shrink-0 animate-pulse rounded-xl bg-elevate/[0.04]" />
   }
 
   return (
@@ -201,8 +201,8 @@ export function DepositAddressPanel() {
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-negative">Deposit details unavailable</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">{error}</p>
-            <p className="mt-2 text-sm leading-relaxed text-white/75">
+            <p className="mt-1 text-sm leading-relaxed text-ink/75">{error}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink/75">
               Do not send funds to an address from an email, a chat message or an older screenshot.
               Every deposit address must come from this screen.
             </p>
@@ -262,7 +262,7 @@ export function DepositAddressPanel() {
           <CardBody className="space-y-6">
             <div className="flex flex-wrap items-center gap-3">
               <AssetIcon symbol={symbol} color={asset?.color ?? '#8C9188'} size="sm" />
-              <span className="text-sm font-medium text-white">
+              <span className="text-sm font-medium text-ink">
                 {asset?.name ?? symbol} ({symbol})
               </span>
               <Badge tone="accent">{active.networkLabel}</Badge>
@@ -287,7 +287,7 @@ export function DepositAddressPanel() {
             {active.addressTag && (
               <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-                <p className="text-sm leading-relaxed text-white/80">
+                <p className="text-sm leading-relaxed text-ink/80">
                   <span className="font-medium text-warn">
                     The {active.tagLabel?.toLowerCase() ?? 'memo'} is not optional.
                   </span>{' '}
@@ -321,7 +321,7 @@ export function DepositAddressPanel() {
         <Card>
           <CardBody className="flex items-start gap-3">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-white/75">
+            <p className="text-sm leading-relaxed text-ink/75">
               No address has been issued for{' '}
               {data.assets
                 .filter((entry) => !data.addresses.some((row) => row.assetId === entry.id))

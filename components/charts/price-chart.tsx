@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { axisProps, chartColors } from '@/lib/chart-theme'
+import { axisPropsFor, useChartTheme } from '@/lib/chart-theme'
 import type { Candle, Timeframe } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
 import { ChartTooltip } from './chart-tooltip'
@@ -52,11 +52,13 @@ export function PriceChart({
   const first = data[0]?.value ?? 0
   const last = data[data.length - 1]?.value ?? 0
   const up = last >= first
-  const color = up ? chartColors.accent : chartColors.negative
+  const [ref, theme] = useChartTheme()
+  const axisProps = axisPropsFor(theme)
+  const color = up ? theme.accent : theme.negative
   const formatTick = tickFormatterFor(timeframe)
 
   return (
-    <div role="img" aria-label={ariaLabel} style={{ width: '100%', height }}>
+    <div ref={ref} role="img" aria-label={ariaLabel} style={{ width: '100%', height }}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
           <defs>
@@ -66,7 +68,7 @@ export function PriceChart({
             </linearGradient>
           </defs>
 
-          <CartesianGrid stroke={chartColors.grid} vertical={false} />
+          <CartesianGrid stroke={theme.grid} vertical={false} />
 
           <XAxis dataKey="time" {...axisProps} minTickGap={48} tickFormatter={formatTick} />
           <YAxis
@@ -80,7 +82,7 @@ export function PriceChart({
           {/* Opening level of the window, so the move is readable at a glance */}
           <ReferenceLine
             y={first}
-            stroke={chartColors.axis}
+            stroke={theme.axis}
             strokeDasharray="3 5"
             strokeOpacity={0.45}
           />
@@ -102,7 +104,7 @@ export function PriceChart({
             strokeWidth={2}
             fill={`url(#${gradientId})`}
             dot={false}
-            activeDot={{ r: 4.5, fill: color, stroke: chartColors.surface, strokeWidth: 2 }}
+            activeDot={{ r: 4.5, fill: color, stroke: theme.surface, strokeWidth: 2 }}
             isAnimationActive
             animationDuration={600}
           />

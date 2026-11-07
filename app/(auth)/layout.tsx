@@ -40,23 +40,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <ul className="mt-10 space-y-5">
               {highlights.map(({ Icon, title, body }) => (
                 <li key={title} className="flex gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                     <Icon className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <div>
-                    <p className="text-sm font-medium text-white">{title}</p>
+                    <p className="text-sm font-medium text-ink">{title}</p>
                     <p className="mt-0.5 text-sm text-muted">{body}</p>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
-
-          <p className="max-w-md text-xs leading-relaxed text-muted">
-            Demonstration build. Sign-up and sign-in are not connected to any account system — no
-            account is created and no credentials are stored. Capital at risk: digital assets are
-            volatile and you may get back less than you put in.
-          </p>
         </div>
       </aside>
 
@@ -67,7 +61,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </div>
           <Link
             href="/"
-            className="ml-auto inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-white"
+            className="ml-auto inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back to site

@@ -105,7 +105,7 @@ export default function ProfilePage() {
           <Card className="border-negative/30 bg-negative/[0.05]">
             <CardBody>
               <p className="text-sm font-medium text-negative">Could not load your profile</p>
-              <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+              <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
               <Button variant="secondary" className="mt-4" onClick={() => void load()}>
                 Try again
               </Button>
@@ -156,7 +156,7 @@ export default function ProfilePage() {
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="text-xl font-semibold text-white">
+                  <h2 className="text-xl font-semibold text-ink">
                     {user.firstName} {user.lastName}
                   </h2>
                   <StatusBadge status={user.verification} />
@@ -246,16 +246,14 @@ export default function ProfilePage() {
               </CardHeader>
               <CardBody>
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                     <BadgeCheck className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <div>
                     <StatusBadge status={user.verification} />
                     <p className="mt-2.5 text-sm leading-relaxed text-muted">
                       {user.verification === 'verified'
-                        ? account.emailVerified
-                          ? 'Your identity is verified. You can deposit and withdraw.'
-                          : 'Your identity is verified, but you still need to confirm your email address before you can deposit.'
+                        ? 'Your identity is verified. You can deposit and withdraw.'
                         : 'Identity verification is required before depositing or withdrawing. The documents needed depend on your jurisdiction.'}
                     </p>
                   </div>
@@ -270,11 +268,11 @@ export default function ProfilePage() {
               </CardHeader>
               <CardBody>
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent">
                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm text-white">
+                    <p className="text-sm text-ink">
                       Two-factor authentication is{' '}
                       <span className={user.twoFactorEnabled ? 'text-positive' : 'text-warn'}>
                         {user.twoFactorEnabled ? 'on' : 'off'}

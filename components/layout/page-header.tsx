@@ -55,13 +55,13 @@ export function Prose({ children, className }: { children: React.ReactNode; clas
     <div
       className={cn(
         'max-w-3xl text-[15px] leading-relaxed text-muted',
-        '[&_h2]:mt-12 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-white',
-        '[&_h3]:mt-8 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-white',
+        '[&_h2]:mt-12 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-ink',
+        '[&_h3]:mt-8 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-ink',
         '[&_p]:mt-4',
         '[&_ul]:mt-4 [&_ul]:space-y-2.5 [&_ul]:pl-5 [&_li]:list-disc [&_li]:marker:text-accent/60',
         '[&_ol]:mt-4 [&_ol]:space-y-2.5 [&_ol]:pl-5 [&_ol>li]:list-decimal',
         '[&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-accent-bright',
-        '[&_strong]:font-medium [&_strong]:text-white',
+        '[&_strong]:font-medium [&_strong]:text-ink',
         className,
       )}
     >
@@ -78,7 +78,7 @@ export function LegalNotice({ documentName }: { documentName: string }) {
       className="rounded-xl border border-warn/25 bg-warn/[0.07] p-5 text-sm leading-relaxed"
     >
       <p className="font-medium text-warn">Draft document — not yet legally reviewed</p>
-      <p className="mt-2 text-white/70">
+      <p className="mt-2 text-ink/70">
         This {documentName} is a structural template showing what the final document must cover. It
         is not legal advice and is not enforceable as drafted. Before launch it must be written or
         reviewed by a qualified lawyer in each jurisdiction the platform operates in, and completed

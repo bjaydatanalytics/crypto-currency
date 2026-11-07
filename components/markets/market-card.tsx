@@ -24,7 +24,7 @@ export function MarketCard({ quote, href }: { quote: MarketQuote; href?: string 
       <div className="flex items-center gap-3">
         <AssetIcon symbol={quote.symbol} color={asset?.color ?? '#8C9188'} />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-white">{quote.name}</p>
+          <p className="truncate text-sm font-semibold text-ink">{quote.name}</p>
           <p className="text-xs uppercase tracking-wider text-muted">{quote.symbol}</p>
         </div>
         <ChangePill value={quote.changePercent24h} />
@@ -32,7 +32,7 @@ export function MarketCard({ quote, href }: { quote: MarketQuote; href?: string 
 
       <div className="mt-5 flex items-end justify-between gap-4">
         <div className="min-w-0">
-          <p className="num text-xl font-semibold tracking-tight text-white">
+          <p className="num text-xl font-semibold tracking-tight text-ink">
             {formatCurrency(quote.price)}
           </p>
           <p className="mt-1 text-xs text-muted">
@@ -51,11 +51,11 @@ export function MarketCard({ quote, href }: { quote: MarketQuote; href?: string 
       <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-line pt-4 text-xs">
         <div>
           <dt className="text-muted">24h high</dt>
-          <dd className="num mt-0.5 text-white/90">{formatCurrency(quote.high24h)}</dd>
+          <dd className="num mt-0.5 text-ink/90">{formatCurrency(quote.high24h)}</dd>
         </div>
         <div className="text-right">
           <dt className="text-muted">24h volume</dt>
-          <dd className="num mt-0.5 text-white/90">{formatCompact(quote.volume24h)}</dd>
+          <dd className="num mt-0.5 text-ink/90">{formatCompact(quote.volume24h)}</dd>
         </div>
       </dl>
     </Card>

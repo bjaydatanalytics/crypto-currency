@@ -4,7 +4,7 @@ import { db } from '@/db'
 import { linkedWallets, walletChainEnum } from '@/db/wallet-schema'
 import { conflict, created, fail, ok, parseBody, withErrorHandling } from '@/lib/server/api'
 import { AuditAction, recordAudit } from '@/lib/server/audit'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 import { sendSecurityAlert } from '@/lib/server/mailer'
 import { getRequestContext } from '@/lib/server/session'
 import { verifyChallenge } from '@/lib/server/wallets/proof'
@@ -20,7 +20,7 @@ const linkSchema = z.object({
 
 /** GET — wallets this user has proven control of. */
 export const GET = withErrorHandling(async () => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const rows = await db
@@ -60,7 +60,7 @@ export const GET = withErrorHandling(async () => {
  * knows which addresses to read.
  */
 export const POST = withErrorHandling(async (request: Request) => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const parsed = await parseBody(request, linkSchema)

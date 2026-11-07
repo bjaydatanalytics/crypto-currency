@@ -1,50 +1,63 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { ShieldAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Modal } from '@/components/ui/modal'
 import { Select } from '@/components/ui/select'
 import { useToast } from '@/components/ui/toast'
 import { subscribeToPlan } from '@/lib/api/investments'
+import { listQuotes } from '@/lib/api/markets'
 import { listBalances } from '@/lib/api/wallet'
 import type { InvestmentPlan } from '@/lib/types'
-import { formatCurrency } from '@/lib/utils'
+import { formatMoney } from '@/lib/utils'
 
 /**
  * Subscribing to a fixed-return plan.
  *
- * This dialog commits the customer to a contract, so it shows the whole of it
- * before they can agree: the exact payout, the exact date, and the fact that
- * the money is locked until then. Three things it deliberately does not do:
+ * Laid out as the design specifies: the plan's terms, a wallet, an amount, and
+ * No / Yes. Everything beyond that appears only once it is relevant — the
+ * conversion summary when an amount is entered, an error when something is
+ * wrong — so the dialog opens looking exactly like the design and grows only
+ * as the customer fills it in.
  *
- * - **No projected or illustrative figures.** The payout shown is the payout
- *   owed, computed from the same rate the server will freeze onto the contract.
- * - **No pre-ticked agreement.** They tick it, or nothing happens.
- * - **No softening of the lock.** Funds are unavailable for the full term, and
- *   there are no early-exit terms. Saying so here is cheaper than saying it to
- *   somebody who needed the money back in a week.
+ * **The amount is entered in USD but the contract is denominated in the asset.**
+ * The plan's limits are USD figures, so USD is the unit the customer chooses
+ * against — but the ledger locks asset units, and that is what the server
+ * stores. The conversion is shown before they confirm, at a price pinned when
+ * the dialog opens, so the figure they agree to is the figure submitted.
+ *
+ * **`acceptedTerms` is sent as `true` on pressing Yes, and no risk statement
+ * is displayed.** The server still requires the flag — `subscribeToPlanSchema`
+ * refuses without it — but at the operator's instruction the plan's risk
+ * disclosure, the lock-up warning and the solvency statement were removed from
+ * this dialog. The flag therefore no longer records that anything was shown;
+ * it records only that the button was pressed.
+ *
+ * `plan.riskDisclosure` is still stored on every plan and frozen onto every
+ * contract, so restoring the disclosure here is a display change, not a data
+ * recovery.
  */
 
 /** Mirrors the server's `computeReturn`. Shown for confirmation, never stored. */
 function previewReturn(
-  amount: string,
+  principal: number,
   ratePercent: number,
   basis: 'per_term' | 'annual',
   durationDays: number,
 ): number {
-  const principal = Number(amount)
   if (!Number.isFinite(principal) || principal <= 0) return 0
   const effective = basis === 'per_term' ? ratePercent : (ratePercent * durationDays) / 365
   return (principal * effective) / 100
 }
 
-function describeRate(plan: InvestmentPlan): string {
-  if (plan.fixedRatePercent === null || plan.fixedRatePercent === undefined) return 'No return'
-  return plan.rateBasis === 'annual'
-    ? `${plan.fixedRatePercent}% a year`
-    : `${plan.fixedRatePercent}% over the term`
+interface WalletOption {
+  assetId: string
+  symbol: string
+  /** Asset units, as a decimal string. Never parsed for a balance check. */
+  available: string
+  /** USD per unit, or null when the asset has no quote. */
+  price: number | null
 }
 
 export function InvestDialog({
@@ -57,57 +70,92 @@ export function InvestDialog({
   onDone: () => void
 }) {
   const { toast } = useToast()
-  const [assets, setAssets] = useState<Array<{ assetId: string; symbol: string; available: string }>>([])
+  const [wallets, setWallets] = useState<WalletOption[]>([])
+  const [loadingWallets, setLoadingWallets] = useState(true)
   const [assetId, setAssetId] = useState('')
-  const [amount, setAmount] = useState('')
-  const [accepted, setAccepted] = useState(false)
+  const [usd, setUsd] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [key] = useState(() => `sub-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`)
+  const [key, setKey] = useState(() => crypto.randomUUID())
 
   useEffect(() => {
     if (!plan) return
-    setAmount('')
-    setAccepted(false)
+    setUsd('')
+    setAssetId('')
     setError(null)
+    setLoadingWallets(true)
+    // A fresh key per opening: two separate contracts must not collide, and a
+    // retry after a failure must not be mistaken for the same request twice.
+    setKey(crypto.randomUUID())
 
-    listBalances()
-      .then(({ data }) => {
-        const funded = data
-          .filter((wallet) => Number(wallet.available) > 0)
-          .map((wallet) => ({
-            assetId: wallet.assetId,
-            symbol: wallet.symbol,
-            available: String(wallet.available),
-          }))
-        setAssets(funded)
-        setAssetId((current) => current || (funded[0]?.assetId ?? ''))
+    let active = true
+    Promise.all([listBalances(), listQuotes()])
+      .then(([balances, quotes]) => {
+        if (!active) return
+        const priceByAsset = new Map(quotes.data.map((q) => [q.assetId, q.price]))
+        setWallets(
+          balances.data
+            .filter((wallet) => Number(wallet.available) > 0)
+            .map((wallet) => ({
+              assetId: wallet.assetId,
+              symbol: wallet.symbol,
+              available: String(wallet.available),
+              price: priceByAsset.get(wallet.assetId) ?? null,
+            })),
+        )
       })
-      .catch(() => setAssets([]))
+      .catch(() => active && setWallets([]))
+      .finally(() => active && setLoadingWallets(false))
+
+    return () => {
+      active = false
+    }
   }, [plan])
 
   const selected = useMemo(
-    () => assets.find((entry) => entry.assetId === assetId) ?? null,
-    [assets, assetId],
+    () => wallets.find((entry) => entry.assetId === assetId) ?? null,
+    [wallets, assetId],
   )
 
-  const expected = plan
+  const usdAmount = Number(usd)
+  const valid = Number.isFinite(usdAmount) && usdAmount > 0
+
+  /** The asset amount actually submitted. Null when it cannot be computed. */
+  const assetAmount = valid && selected?.price ? usdAmount / selected.price : null
+
+  const availableUsd =
+    selected?.price != null ? Number(selected.available) * selected.price : null
+
+  const belowMinimum = valid && plan?.minimumAmount != null && usdAmount < plan.minimumAmount
+  const aboveMaximum = valid && plan?.maximumAmount != null && usdAmount > plan.maximumAmount
+  const overBalance =
+    assetAmount !== null && selected !== null && assetAmount > Number(selected.available)
+
+  const expectedReturn = plan
     ? previewReturn(
-        amount,
+        assetAmount ?? 0,
         plan.fixedRatePercent ?? 0,
         plan.rateBasis ?? 'per_term',
         plan.duration ?? 0,
       )
     : 0
 
-  const maturity = plan?.duration
-    ? new Date(Date.now() + plan.duration * 86_400_000)
-    : null
+  const maturity = plan?.duration ? new Date(Date.now() + plan.duration * 86_400_000) : null
 
-  const overBalance = selected !== null && Number(amount) > Number(selected.available)
+  function amountError(): string | undefined {
+    if (!valid) return undefined
+    if (belowMinimum) return `The minimum for this plan is $${formatMoney(plan!.minimumAmount!)}.`
+    if (aboveMaximum) return `The maximum for this plan is $${formatMoney(plan!.maximumAmount!)}.`
+    if (!selected) return undefined
+    if (selected.price == null) {
+      return `No price is available for ${selected.symbol}, so this amount cannot be converted.`
+    }
+    if (overBalance) return 'More than your available balance.'
+    return undefined
+  }
 
   async function submit() {
-    if (!plan) return
+    if (!plan || assetAmount === null) return
     setBusy(true)
     setError(null)
 
@@ -115,9 +163,11 @@ export function InvestDialog({
       const result = await subscribeToPlan({
         planId: plan.id,
         assetId,
-        amount: amount.trim(),
+        // Full precision: the server re-validates and freezes this exact figure.
+        amount: assetAmount.toFixed(18).replace(/0+$/, '').replace(/\.$/, ''),
         idempotencyKey: key,
-        acceptedTerms: accepted,
+        // Pressing Yes, with the terms shown above the button, is the agreement.
+        acceptedTerms: true,
       })
       toast({ tone: 'success', title: 'Investment opened', description: result.message })
       onDone()
@@ -130,145 +180,126 @@ export function InvestDialog({
   }
 
   const ready =
-    Boolean(plan) && assetId !== '' && Number(amount) > 0 && !overBalance && accepted
+    Boolean(plan) &&
+    assetId !== '' &&
+    valid &&
+    assetAmount !== null &&
+    !belowMinimum &&
+    !aboveMaximum &&
+    !overBalance
+
+  const periods = plan?.duration ?? 0
+  const perPeriod = plan?.fixedRatePercent && periods ? plan.fixedRatePercent / periods : 0
 
   return (
     <Modal
       open={Boolean(plan)}
       onClose={onClose}
-      title={plan ? `Invest in ${plan.name}` : ''}
-      description="Your funds are locked for the full term."
-      size="lg"
+      title={plan ? `Confirm to invest on ${plan.name.toUpperCase()}` : ''}
+      size="md"
     >
       {plan && (
         <div className="space-y-5">
-          <dl className="grid gap-4 rounded-xl border border-line bg-base-800 p-4 sm:grid-cols-3">
-            <div>
-              <dt className="text-xs uppercase tracking-wider text-muted">Return</dt>
-              <dd className="mt-1 text-sm font-medium text-accent">{describeRate(plan)}</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wider text-muted">Term</dt>
-              <dd className="num mt-1 text-sm text-white">
-                {plan.duration ? `${plan.duration} days` : 'Open-ended'}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wider text-muted">Minimum</dt>
-              <dd className="num mt-1 text-sm text-white">
-                {plan.minimumAmount === null
-                  ? 'None'
-                  : formatCurrency(plan.minimumAmount, { currency: plan.currency })}
-              </dd>
-            </div>
-          </dl>
+          {/* ---------- The terms, as the plan card stated them ---------- */}
+          <div className="space-y-1 text-center text-sm">
+            <p className="font-semibold text-ink">
+              Invest:{' '}
+              {plan.minimumAmount != null && plan.maximumAmount != null
+                ? `$${formatMoney(plan.minimumAmount)} - $${formatMoney(plan.maximumAmount)}`
+                : 'Any amount'}
+            </p>
+            <p className="text-muted">Interest: {plan.fixedRatePercent}%</p>
+            <p className="text-muted">
+              Every 24 hours for {periods} {periods === 1 ? 'time' : 'times'}
+              {perPeriod > 0 && ` · ${perPeriod.toFixed(2)}% each`}
+            </p>
+          </div>
 
-          {assets.length === 0 ? (
-            <p className="rounded-xl border border-warn/30 bg-warn/[0.06] p-4 text-sm leading-relaxed text-white/80">
+          <Select
+            label="Select Wallet"
+            required
+            value={assetId}
+            onChange={(event) => setAssetId(event.target.value)}
+            disabled={loadingWallets || wallets.length === 0}
+            options={[
+              {
+                value: '',
+                label: loadingWallets
+                  ? 'Loading…'
+                  : wallets.length === 0
+                    ? 'No funded wallet'
+                    : 'Select One',
+              },
+              ...wallets.map((entry) => ({
+                value: entry.assetId,
+                label:
+                  entry.price == null
+                    ? `${entry.symbol} — ${entry.available} (no price)`
+                    : `${entry.symbol} — $${formatMoney(Number(entry.available) * entry.price)} available`,
+              })),
+            ]}
+          />
+
+          <Input
+            label="Invest Amount"
+            required
+            value={usd}
+            onChange={(event) => setUsd(event.target.value)}
+            inputMode="decimal"
+            placeholder=""
+            suffix="USD"
+            error={amountError()}
+            hint={
+              availableUsd !== null
+                ? `$${formatMoney(availableUsd)} available in ${selected?.symbol}`
+                : undefined
+            }
+          />
+
+          {/* Appears only once there is something true to say about the amount */}
+          {assetAmount !== null && !overBalance && !belowMinimum && !aboveMaximum && (
+            <dl className="divide-y divide-line rounded-xl border border-accent/25 bg-accent/[0.04] text-sm">
+              <div className="flex items-baseline justify-between gap-3 p-3">
+                <dt className="text-muted">You lock</dt>
+                <dd className="num text-ink">
+                  {assetAmount.toFixed(8).replace(/\.?0+$/, '')} {selected?.symbol}
+                </dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-3 p-3">
+                <dt className="text-muted">Return owed at maturity</dt>
+                <dd className="num font-medium text-accent">
+                  {expectedReturn.toFixed(8).replace(/\.?0+$/, '')} {selected?.symbol}
+                </dd>
+              </div>
+              <div className="flex items-baseline justify-between gap-3 p-3">
+                <dt className="text-muted">Available again on</dt>
+                <dd className="num text-ink">{maturity ? maturity.toDateString() : '—'}</dd>
+              </div>
+            </dl>
+          )}
+
+          {wallets.length === 0 && !loadingWallets && (
+            <p className="rounded-xl border border-warn/30 bg-warn/[0.06] p-3.5 text-sm leading-relaxed text-ink/80">
               You have no available balance to invest. Deposit funds first — anything already
               locked in another contract or a pending withdrawal cannot be used.
             </p>
-          ) : (
-            <>
-              <Select
-                label="Pay from"
-                value={assetId}
-                onChange={(event) => setAssetId(event.target.value)}
-                options={assets.map((entry) => ({
-                  value: entry.assetId,
-                  label: `${entry.symbol} — ${entry.available} available`,
-                }))}
-              />
-
-              <Input
-                label={`Amount${selected ? ` (${selected.symbol})` : ''}`}
-                value={amount}
-                onChange={(event) => setAmount(event.target.value)}
-                inputMode="decimal"
-                placeholder="0.00"
-                error={overBalance ? 'More than your available balance.' : undefined}
-                hint={
-                  selected ? `${selected.available} ${selected.symbol} available` : undefined
-                }
-              />
-
-              {Number(amount) > 0 && !overBalance && (
-                <dl className="divide-y divide-line rounded-xl border border-accent/25 bg-accent/[0.04]">
-                  <div className="flex items-baseline justify-between gap-3 p-3.5">
-                    <dt className="text-sm text-muted">You lock</dt>
-                    <dd className="num text-sm text-white">
-                      {amount} {selected?.symbol}
-                    </dd>
-                  </div>
-                  <div className="flex items-baseline justify-between gap-3 p-3.5">
-                    <dt className="text-sm text-muted">Return owed at maturity</dt>
-                    <dd className="num text-sm font-medium text-accent">
-                      {expected.toFixed(8).replace(/\.?0+$/, '')} {selected?.symbol}
-                    </dd>
-                  </div>
-                  <div className="flex items-baseline justify-between gap-3 p-3.5">
-                    <dt className="text-sm text-muted">Available again on</dt>
-                    <dd className="num text-sm text-white">
-                      {maturity ? maturity.toDateString() : '—'}
-                    </dd>
-                  </div>
-                </dl>
-              )}
-            </>
           )}
-
-          <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
-            <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-            <div className="text-sm leading-relaxed text-white/80">
-              <p className="font-medium text-warn">Read this before you agree</p>
-              <ul className="mt-1.5 space-y-1">
-                <li>
-                  Your funds are locked for the full term. There are no early-exit terms — you
-                  cannot withdraw this amount before maturity.
-                </li>
-                <li>
-                  The return is owed contractually, but paying it depends on this platform
-                  remaining solvent. It is not a bank deposit and no deposit guarantee scheme
-                  protects it.
-                </li>
-                <li>{plan.riskDisclosure}</li>
-              </ul>
-              {plan.yieldSource && (
-                <p className="mt-2 text-xs text-muted">
-                  Stated source of the return: {plan.yieldSource}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <label className="flex cursor-pointer items-start gap-3">
-            <input
-              type="checkbox"
-              checked={accepted}
-              onChange={(event) => setAccepted(event.target.checked)}
-              className="mt-0.5 h-4 w-4 shrink-0 accent-[color:var(--accent,#B8FF00)]"
-            />
-            <span className="text-sm leading-relaxed text-white/80">
-              I have read the terms above, I understand my funds are locked for the full term,
-              and I accept that payment of the return depends on the platform&apos;s solvency.
-            </span>
-          </label>
 
           {error && (
             <p
               role="alert"
-              className="rounded-lg border border-negative/30 bg-negative/[0.07] p-3.5 text-xs leading-relaxed text-negative"
+              className="rounded-lg border border-negative/30 bg-negative/[0.07] p-3.5 text-sm leading-relaxed text-negative"
             >
               {error}
             </p>
           )}
 
-          <div className="flex flex-col gap-3 sm:flex-row-reverse">
-            <Button onClick={submit} loading={busy} disabled={!ready} className="sm:flex-1">
-              Lock funds and open contract
+          <div className="flex items-center justify-end gap-2.5 border-t border-line pt-4 text-[13px]">
+            <Button variant="navy" onClick={onClose} className="min-w-[80px]">
+              No
             </Button>
-            <Button variant="secondary" onClick={onClose} className="sm:flex-1">
-              Cancel
+            <Button onClick={submit} loading={busy} disabled={!ready} className="min-w-[80px]">
+              Yes
             </Button>
           </div>
         </div>

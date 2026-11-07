@@ -10,7 +10,6 @@ import { Services } from '@/components/marketing/services'
 import { Testimonials } from '@/components/marketing/testimonials'
 import { TradingPreview } from '@/components/marketing/trading-preview'
 import { Trust } from '@/components/marketing/trust'
-import { DemoBanner } from '@/components/layout/demo-banner'
 import { brand } from '@/lib/config'
 
 /**
@@ -35,7 +34,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <DemoBanner />
+      
       <Hero />
       <Features />
       <MarketSection />

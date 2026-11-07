@@ -9,7 +9,6 @@ import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { HoldingsTable } from '@/components/dashboard/holdings-table'
 import { StatCard } from '@/components/dashboard/stat-card'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
-import { DemoNotice } from '@/components/ui/demo-notice'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs } from '@/components/ui/tabs'
 import { fetchPerformance, fetchPortfolio, type PerformanceRange } from '@/lib/api/portfolio'
@@ -54,7 +53,7 @@ export default function PortfolioPage() {
       <DashboardHeader title="Portfolio" />
 
       <div className="space-y-6 p-4 sm:p-6">
-        <DemoNotice />
+        
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {portfolio ? (

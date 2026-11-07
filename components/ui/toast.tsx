@@ -77,7 +77,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             >
               <span className="mt-0.5 shrink-0">{toneStyles[item.tone].icon}</span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-white">{item.title}</p>
+                <p className="text-sm font-medium text-ink">{item.title}</p>
                 {item.description && (
                   <p className="mt-1 text-xs leading-relaxed text-muted">{item.description}</p>
                 )}
@@ -86,7 +86,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={() => dismiss(item.id)}
                 aria-label="Dismiss notification"
-                className="shrink-0 rounded-md p-1 text-muted transition-colors hover:bg-white/5 hover:text-white"
+                className="shrink-0 rounded-md p-1 text-muted transition-colors hover:bg-elevate/5 hover:text-ink"
               >
                 <X className="h-3.5 w-3.5" />
               </button>

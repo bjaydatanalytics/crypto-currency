@@ -48,7 +48,7 @@ export function HoldingsTable({ holdings }: { holdings: Holding[] }) {
                       size="sm"
                     />
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-white">{holding.name}</p>
+                      <p className="truncate font-medium text-ink">{holding.name}</p>
                       <p className="text-xs text-muted">{holding.symbol}</p>
                     </div>
                   </div>
@@ -80,7 +80,7 @@ export function HoldingsTable({ holdings }: { holdings: Holding[] }) {
                 size="sm"
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-white">{holding.name}</p>
+                <p className="truncate text-sm font-medium text-ink">{holding.name}</p>
                 <p className="text-xs text-muted">{holding.symbol}</p>
               </div>
               <ChangePill value={holding.changePercent24h} />
@@ -99,7 +99,7 @@ export function HoldingsTable({ holdings }: { holdings: Holding[] }) {
               <MobileRow
                 label="Value"
                 value={
-                  <span className="num font-medium text-white">
+                  <span className="num font-medium text-ink">
                     {formatCurrency(holding.value)}
                   </span>
                 }

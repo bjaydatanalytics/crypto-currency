@@ -35,10 +35,10 @@ export function Features() {
               key={title}
               className="group relative bg-base-800 p-6 transition-colors duration-300 hover:bg-surface"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent transition-all duration-300 group-hover:border-accent/30 group-hover:bg-accent/10">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-elevate/[0.03] text-accent transition-all duration-300 group-hover:border-accent/30 group-hover:bg-accent/10">
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </span>
-              <h3 className="mt-5 text-[15px] font-semibold uppercase tracking-wide text-white">
+              <h3 className="mt-5 text-[15px] font-semibold uppercase tracking-wide text-ink">
                 {title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">{description}</p>

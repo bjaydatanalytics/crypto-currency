@@ -12,7 +12,7 @@ const steps = [
     Icon: BadgeCheck,
     title: 'Complete Verification',
     description:
-      'Confirm your email and complete identity checks, which are required before you can transact.',
+      'Complete identity checks, which are required before you can transact.',
   },
   {
     Icon: CreditCard,
@@ -56,7 +56,7 @@ export function HowItWorks() {
                 </span>
               </div>
 
-              <h3 className="mt-4 text-base font-semibold uppercase tracking-wide text-white lg:mt-3">
+              <h3 className="mt-4 text-base font-semibold uppercase tracking-wide text-ink lg:mt-3">
                 {step.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">{step.description}</p>

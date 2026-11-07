@@ -5,7 +5,22 @@ import { Eye, EyeOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const fieldBase =
-  'w-full rounded-xl border border-line bg-base-800 px-4 py-3 text-sm text-white placeholder:text-muted/70 transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-50'
+  'w-full rounded-xl border border-line bg-base-800 px-4 py-3 text-sm text-ink placeholder:text-muted/70 transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-50'
+
+/**
+ * Marks a field the form will not submit without.
+ *
+ * Rendered from the control's own `required` attribute rather than a separate
+ * prop, so the visual marker and the browser's validation can never disagree.
+ */
+function RequiredMark() {
+  return (
+    <span className="ml-0.5 text-negative" title="Required">
+      <span aria-hidden="true">*</span>
+      <span className="sr-only">(required)</span>
+    </span>
+  )
+}
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -27,8 +42,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={inputId} className="mb-2 block text-sm font-medium text-white/90">
+        <label htmlFor={inputId} className="mb-2 block text-sm font-medium text-ink/90">
           {label}
+          {props.required && <RequiredMark />}
         </label>
       )}
       <div className="relative">
@@ -92,7 +108,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, InputProps>(function P
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? 'Hide password' : 'Show password'}
         className={cn(
-          'absolute right-3 text-muted transition-colors hover:text-white',
+          'absolute right-3 text-muted transition-colors hover:text-ink',
           // Sit level with the field, accounting for the label above it
           props.label ? 'top-[42px]' : 'top-3.5',
         )}
@@ -119,8 +135,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={textareaId} className="mb-2 block text-sm font-medium text-white/90">
+        <label htmlFor={textareaId} className="mb-2 block text-sm font-medium text-ink/90">
           {label}
+          {props.required && <RequiredMark />}
         </label>
       )}
       <textarea

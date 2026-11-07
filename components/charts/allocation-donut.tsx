@@ -1,7 +1,7 @@
 'use client'
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
-import { assetColor, chartColors } from '@/lib/chart-theme'
+import { assetColor, useChartTheme } from '@/lib/chart-theme'
 import type { Holding } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
 
@@ -19,12 +19,14 @@ export function AllocationDonut({
   holdings: Holding[]
   height?: number
 }) {
+  const [ref, theme] = useChartTheme()
+
   const data = holdings.map((h) => ({
     name: h.name,
     symbol: h.symbol,
     value: h.value,
     allocation: h.allocation,
-    fill: assetColor(h.assetId),
+    fill: assetColor(h.assetId, theme),
   }))
 
   const total = data.reduce((sum, d) => sum + d.value, 0)
@@ -32,6 +34,7 @@ export function AllocationDonut({
   return (
     <div className="flex flex-col items-center gap-6 sm:flex-row">
       <div
+        ref={ref}
         className="relative w-full max-w-[200px] shrink-0"
         style={{ height }}
         role="img"
@@ -48,7 +51,7 @@ export function AllocationDonut({
               innerRadius="62%"
               outerRadius="92%"
               paddingAngle={2}
-              stroke={chartColors.surface}
+              stroke={theme.surface}
               strokeWidth={2}
               isAnimationActive
               animationDuration={700}
@@ -69,9 +72,9 @@ export function AllocationDonut({
                         style={{ backgroundColor: item.fill }}
                         aria-hidden="true"
                       />
-                      <span className="text-sm font-medium text-white">{item.name}</span>
+                      <span className="text-sm font-medium text-ink">{item.name}</span>
                     </div>
-                    <p className="num mt-1 text-sm text-white/80">
+                    <p className="num mt-1 text-sm text-ink/80">
                       {formatCurrency(item.value)} · {item.allocation}%
                     </p>
                   </div>
@@ -84,7 +87,7 @@ export function AllocationDonut({
         {/* Hero value in the hole — the one number the chart is really about */}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-[11px] uppercase tracking-wider text-muted">Total</span>
-          <span className="num mt-1 text-lg font-semibold text-white">
+          <span className="num mt-1 text-lg font-semibold text-ink">
             {formatCurrency(total, { compact: true })}
           </span>
         </div>
@@ -104,9 +107,9 @@ export function AllocationDonut({
               aria-hidden="true"
             />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm text-white/90">{item.name}</p>
+              <p className="truncate text-sm text-ink/90">{item.name}</p>
               <p className="num mt-0.5 text-xs text-muted">
-                <span className="text-white/70">{item.allocation}%</span>
+                <span className="text-ink/70">{item.allocation}%</span>
                 <span className="mx-1.5">·</span>
                 {formatCurrency(item.value, { compact: true })}
               </p>

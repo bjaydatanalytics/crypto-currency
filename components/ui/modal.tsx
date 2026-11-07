@@ -124,7 +124,7 @@ export function Modal({
           >
             <div className="flex items-start justify-between gap-4 border-b border-line p-5">
               <div className="min-w-0">
-                <h2 id="modal-title" className="text-lg font-semibold text-white">
+                <h2 id="modal-title" className="text-lg font-semibold text-ink">
                   {title}
                 </h2>
                 {description && (
@@ -137,7 +137,7 @@ export function Modal({
                 type="button"
                 onClick={onClose}
                 aria-label="Close dialog"
-                className="-mr-1 -mt-1 rounded-lg p-2 text-muted transition-colors hover:bg-white/5 hover:text-white"
+                className="-mr-1 -mt-1 rounded-lg p-2 text-muted transition-colors hover:bg-elevate/5 hover:text-ink"
               >
                 <X className="h-4 w-4" />
               </button>

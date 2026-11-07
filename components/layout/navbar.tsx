@@ -60,7 +60,7 @@ export function Navbar() {
                     aria-current={active ? 'page' : undefined}
                     className={cn(
                       'relative rounded-lg px-3.5 py-2 text-sm transition-colors',
-                      active ? 'text-white' : 'text-muted hover:text-white',
+                      active ? 'text-ink' : 'text-muted hover:text-ink',
                     )}
                   >
                     {link.label}
@@ -145,7 +145,7 @@ export function Navbar() {
                         'block rounded-xl px-4 py-3.5 text-[15px] transition-colors',
                         pathname === link.href
                           ? 'bg-accent/10 text-accent'
-                          : 'text-white/85 hover:bg-white/[0.05]',
+                          : 'text-ink/85 hover:bg-elevate/[0.05]',
                       )}
                     >
                       {link.label}

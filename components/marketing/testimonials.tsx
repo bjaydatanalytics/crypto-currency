@@ -1,6 +1,5 @@
 import { Quote } from 'lucide-react'
 import { Card } from '@/components/ui/card'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { RevealGroup, RevealItem } from '@/components/ui/reveal'
 import { Section, SectionHeading } from '@/components/ui/section'
 
@@ -42,11 +41,11 @@ export function Testimonials() {
                 </p>
                 <div className="mt-6 flex items-center gap-3 border-t border-line pt-5">
                   <span
-                    className="h-9 w-9 shrink-0 rounded-full border border-dashed border-line bg-white/[0.02]"
+                    className="h-9 w-9 shrink-0 rounded-full border border-dashed border-line bg-elevate/[0.02]"
                     aria-hidden="true"
                   />
                   <div className="min-w-0">
-                    <p className="text-sm text-white/70">{item.role}</p>
+                    <p className="text-sm text-ink/70">{item.role}</p>
                     <p className="text-xs text-muted">{item.context}</p>
                   </div>
                 </div>
@@ -56,7 +55,7 @@ export function Testimonials() {
         </RevealGroup>
 
         <div className="mt-8 flex justify-center">
-          <PendingInfo label="Verified customer testimonials and consent to publish" />
+          
         </div>
       </div>
     </Section>

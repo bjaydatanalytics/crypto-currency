@@ -22,6 +22,14 @@ export interface AccountIdentity {
   firstName: string
   lastName: string
   email: string
+  /**
+   * Whether TOTP is actually enrolled, from `users.totpEnabledAt`.
+   *
+   * The dashboard nags about two-factor only when it is genuinely off. A
+   * prompt shown to someone who already enrolled teaches them to dismiss
+   * security warnings without reading them.
+   */
+  twoFactorEnabled: boolean
 }
 
 const AccountContext = createContext<AccountIdentity | null>(null)

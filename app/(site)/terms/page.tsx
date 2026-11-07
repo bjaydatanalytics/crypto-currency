@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { LegalNotice, PageHeader, Prose } from '@/components/layout/page-header'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { Reveal } from '@/components/ui/reveal'
 import { Section } from '@/components/ui/section'
 import { brand } from '@/lib/config'
@@ -36,7 +35,7 @@ export default function TermsPage() {
                 stated here before launch.
               </p>
               <p>
-                <PendingInfo label="Operating entity, company number and registered address" />
+                
               </p>
 
               <h2>2. Eligibility</h2>
@@ -52,7 +51,7 @@ export default function TermsPage() {
                 <li>You must be acting on your own behalf, not for an undisclosed third party.</li>
               </ul>
               <p>
-                <PendingInfo label="List of restricted jurisdictions" />
+                
               </p>
 
               <h2>3. Your account</h2>
@@ -141,7 +140,7 @@ export default function TermsPage() {
                 by a qualified lawyer.
               </p>
               <p>
-                <PendingInfo label="Liability, indemnity and warranty provisions" />
+                
               </p>
 
               <h2>13. Complaints and disputes</h2>
@@ -150,7 +149,7 @@ export default function TermsPage() {
                 resolution scheme must be published here.
               </p>
               <p>
-                <PendingInfo label="Complaints procedure and dispute resolution" />
+                
               </p>
 
               <h2>14. Governing law</h2>
@@ -159,7 +158,7 @@ export default function TermsPage() {
                 operator's legal counsel.
               </p>
               <p>
-                <PendingInfo label="Governing law and jurisdiction" />
+                
               </p>
 
               <h2>15. Changes to these terms</h2>
@@ -168,7 +167,7 @@ export default function TermsPage() {
                 date of the current version will be shown here.
               </p>
               <p>
-                <PendingInfo label="Version and effective date" />
+                
               </p>
             </Prose>
           </Reveal>

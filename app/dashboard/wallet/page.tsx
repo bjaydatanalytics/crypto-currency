@@ -11,7 +11,6 @@ import {
 import { AssetIcon } from '@/components/ui/asset-icon'
 import { Button } from '@/components/ui/button'
 import { Card, CardBody } from '@/components/ui/card'
-import { DemoNotice } from '@/components/ui/demo-notice'
 import { SkeletonCard } from '@/components/ui/skeleton'
 import { listBalances } from '@/lib/api/wallet'
 import { getAsset } from '@/lib/mock-data'
@@ -40,11 +39,7 @@ export default function WalletPage() {
       <DashboardHeader title="Wallet" />
 
       <div className="space-y-6 p-4 sm:p-6">
-        <DemoNotice title="No custody backend connected">
-          Balances below are sample data. Deposits, withdrawals and transfers are disabled: this
-          build has no custody provider, no deposit addresses and no ledger. Nothing you do on this
-          screen moves value.
-        </DemoNotice>
+        
 
         <div className="grid gap-4 sm:grid-cols-3">
           <StatCard
@@ -84,7 +79,7 @@ export default function WalletPage() {
                         size="lg"
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-base font-semibold text-white">
+                        <p className="truncate text-base font-semibold text-ink">
                           {wallet.name}
                         </p>
                         <p className="truncate text-xs text-muted">{wallet.network}</p>
@@ -92,7 +87,7 @@ export default function WalletPage() {
                     </div>
 
                     <div className="mt-5">
-                      <p className="num text-2xl font-semibold tracking-tight text-white">
+                      <p className="num text-2xl font-semibold tracking-tight text-ink">
                         {formatAmount(wallet.available + wallet.locked)}{' '}
                         <span className="text-base text-muted">{wallet.symbol}</span>
                       </p>
@@ -104,13 +99,13 @@ export default function WalletPage() {
                     <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-4 text-xs">
                       <div>
                         <dt className="text-muted">Available</dt>
-                        <dd className="num mt-0.5 text-white/90">
+                        <dd className="num mt-0.5 text-ink/90">
                           {formatAmount(wallet.available)}
                         </dd>
                       </div>
                       <div className="text-right">
                         <dt className="text-muted">Locked</dt>
-                        <dd className="num mt-0.5 text-white/90">{formatAmount(wallet.locked)}</dd>
+                        <dd className="num mt-0.5 text-ink/90">{formatAmount(wallet.locked)}</dd>
                       </div>
                     </dl>
 

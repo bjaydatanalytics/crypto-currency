@@ -118,7 +118,7 @@ function FundDialog({
       <div className="space-y-5">
         <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-          <p className="text-sm leading-relaxed text-white/80">
+          <p className="text-sm leading-relaxed text-ink/80">
             Only record this <span className="font-medium text-warn">after</span> the funds have
             actually been moved into the business account. Recording a funding that did not happen
             inflates the treasury on paper and lets a maturity pay out against nothing — which
@@ -237,7 +237,7 @@ function TreasuryPanel({
                   className="mt-0.5 h-4 w-4 shrink-0 text-negative"
                   aria-hidden="true"
                 />
-                <div className="text-sm leading-relaxed text-white/85">
+                <div className="text-sm leading-relaxed text-ink/85">
                   <p className="font-medium text-negative">
                     You have promised more than the treasury holds
                   </p>
@@ -263,8 +263,8 @@ function TreasuryPanel({
                 <Tbody>
                   {positions.map((position) => (
                     <Tr key={position.assetId}>
-                      <Td className="text-white">{position.symbol}</Td>
-                      <Td numeric className="num text-white">
+                      <Td className="text-ink">{position.symbol}</Td>
+                      <Td numeric className="num text-ink">
                         {trimZeros(position.balance)}
                       </Td>
                       <Td numeric className="num text-muted">
@@ -372,7 +372,7 @@ export function InvestmentReview() {
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-negative">Could not load investments</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
           </div>
         </CardBody>
       </Card>
@@ -434,7 +434,7 @@ export function InvestmentReview() {
                       return (
                         <Tr key={contract.id}>
                           <Td>
-                            <span className="text-white">{contract.userName}</span>
+                            <span className="text-ink">{contract.userName}</span>
                             <span className="block text-xs text-muted">{contract.userEmail}</span>
                           </Td>
                           <Td>
@@ -444,7 +444,7 @@ export function InvestmentReview() {
                               {contract.rateBasis === 'annual' ? 'a year' : 'per term'}
                             </span>
                           </Td>
-                          <Td numeric className="num text-white">
+                          <Td numeric className="num text-ink">
                             {trimZeros(contract.principal)} {contract.assetSymbol}
                           </Td>
                           <Td numeric className="num text-accent">
@@ -499,7 +499,7 @@ export function InvestmentReview() {
                   return (
                     <MobileCard key={contract.id}>
                       <div className="flex items-center justify-between gap-3">
-                        <p className="num text-sm font-medium text-white">
+                        <p className="num text-sm font-medium text-ink">
                           {trimZeros(contract.principal)} {contract.assetSymbol}
                         </p>
                         <Badge tone={STATE_TONES[contract.status]}>{contract.status}</Badge>
@@ -557,7 +557,7 @@ export function InvestmentReview() {
         {cancelling && (
           <div className="space-y-5">
             <div className="rounded-xl border border-line p-4">
-              <p className="num text-sm font-medium text-white">
+              <p className="num text-sm font-medium text-ink">
                 {trimZeros(cancelling.principal)} {cancelling.assetSymbol}
               </p>
               <p className="mt-1 text-sm text-muted">
@@ -565,7 +565,7 @@ export function InvestmentReview() {
               </p>
             </div>
 
-            <p className="rounded-xl border border-warn/30 bg-warn/[0.06] p-4 text-sm leading-relaxed text-white/80">
+            <p className="rounded-xl border border-warn/30 bg-warn/[0.06] p-4 text-sm leading-relaxed text-ink/80">
               There are no early-exit terms, so the whole principal goes back — keeping any part
               of it would be a penalty the customer never agreed to.
             </p>

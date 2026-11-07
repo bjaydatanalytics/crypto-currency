@@ -9,30 +9,60 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      /**
+       * Every colour resolves through a CSS variable rather than a literal.
+       *
+       * The marketing site and admin run on the dark lime palette defined at
+       * `:root`; the customer panel re-declares the same variables in light
+       * blue under `[data-panel]`. Because the class names never change, a
+       * shared primitive like `<Card>` or `<Button>` renders correctly in both
+       * without a single conditional — see `app/globals.css` for the values.
+       *
+       * The `<alpha-value>` placeholder is what keeps `bg-accent/12` and
+       * `text-muted/70` working, so these stay space-separated RGB triplets.
+       */
       colors: {
         /* Backgrounds */
         base: {
-          DEFAULT: '#050505',
-          900: '#050505',
-          800: '#080A07',
-          700: '#0B0D09',
+          DEFAULT: 'rgb(var(--c-base) / <alpha-value>)',
+          900: 'rgb(var(--c-base-900) / <alpha-value>)',
+          800: 'rgb(var(--c-base-800) / <alpha-value>)',
+          700: 'rgb(var(--c-base-700) / <alpha-value>)',
         },
         /* Cards */
         surface: {
-          DEFAULT: '#0D100C',
-          raised: '#11140F',
+          DEFAULT: 'rgb(var(--c-surface) / <alpha-value>)',
+          raised: 'rgb(var(--c-surface-raised) / <alpha-value>)',
         },
-        /* Lime accent */
+        /* Lime in the dark theme, blue in the panel */
         accent: {
-          DEFAULT: '#B8FF00',
-          bright: '#C6FF24',
-          dim: '#8FC700',
+          DEFAULT: 'rgb(var(--c-accent) / <alpha-value>)',
+          bright: 'rgb(var(--c-accent-bright) / <alpha-value>)',
+          dim: 'rgb(var(--c-accent-dim) / <alpha-value>)',
         },
-        muted: '#8C9188',
-        line: 'rgba(255,255,255,0.10)',
-        positive: '#4ADE80',
-        negative: '#F87171',
-        warn: '#FBBF24',
+        /**
+         * Legible text on an accent fill — black on lime, white on blue.
+         * Replaces the hardcoded `text-black` that only held in the dark theme.
+         */
+        'on-accent': 'rgb(var(--c-on-accent) / <alpha-value>)',
+        /** Primary body and heading text. White on dark, near-black in the panel. */
+        ink: 'rgb(var(--c-ink) / <alpha-value>)',
+        muted: 'rgb(var(--c-muted) / <alpha-value>)',
+        /**
+         * The faint wash used for inset rows, chips and secondary buttons.
+         * Was `bg-white/[0.03]`, which turns invisible on a light background.
+         */
+        elevate: 'rgb(var(--c-elevate) / <alpha-value>)',
+        line: 'var(--c-line)',
+        positive: 'rgb(var(--c-positive) / <alpha-value>)',
+        negative: 'rgb(var(--c-negative) / <alpha-value>)',
+        warn: 'rgb(var(--c-warn) / <alpha-value>)',
+        /** Fixed deep navy. Identical in both themes — used for the 401k banner. */
+        navy: {
+          DEFAULT: '#16233F',
+          deep: '#0E1A33',
+          soft: '#1E3156',
+        },
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
@@ -43,9 +73,10 @@ const config: Config = {
         '5xl': '2.5rem',
       },
       boxShadow: {
-        glow: '0 0 40px -12px rgba(184,255,0,0.45)',
-        'glow-sm': '0 0 20px -8px rgba(184,255,0,0.4)',
-        card: '0 1px 0 0 rgba(255,255,255,0.04) inset, 0 20px 40px -24px rgba(0,0,0,0.9)',
+        /* Accent-tinted, so the lime glow does not follow the blue panel */
+        glow: '0 0 40px -12px var(--c-glow)',
+        'glow-sm': '0 0 20px -8px var(--c-glow-sm)',
+        card: 'var(--c-shadow-card)',
       },
       backgroundImage: {
         'grid-fade':

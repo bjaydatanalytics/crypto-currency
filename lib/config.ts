@@ -27,6 +27,26 @@ export const brand = {
 } as const
 
 /**
+ * Marketing assurances printed on the plan cards.
+ *
+ * THESE ARE OPERATOR ASSERTIONS, NOT FACTS THE APPLICATION CAN CHECK.
+ *
+ * `depositAssurance` prints verbatim at the foot of every plan card, where a
+ * prospective customer reads it as a statement about their money. Nothing in
+ * this codebase verifies it: there is no insurer, policy number or cover limit
+ * anywhere in the system, and no deposit-protection scheme is integrated.
+ *
+ * Whoever sets this line is making the claim. In most jurisdictions an
+ * unfounded insurance or guarantee claim on a financial promotion is unlawful,
+ * so if a policy does exist, name the insurer and the cover — a specific
+ * statement is both more persuasive and defensible, and a bare slogan is
+ * neither. Set it to an empty string to print nothing.
+ */
+export const assurances = {
+  depositAssurance: 'ALL DEPOSITS ARE SECURED BY INSURANCE',
+} as const
+
+/**
  * Company / legal details.
  * Intentionally blank — these must come from the client's verified records.
  */

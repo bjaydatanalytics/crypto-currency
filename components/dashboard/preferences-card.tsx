@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Bell, Globe, Lock } from 'lucide-react'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { SkeletonRows } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/toast'
 import { fetchPreferences, savePreferences, type Preferences } from '@/lib/api/auth'
@@ -62,7 +61,7 @@ function Toggle({
         className="mt-0.5 h-4 w-4 shrink-0 accent-[color:var(--accent,#B8FF00)]"
       />
       <span className="min-w-0">
-        <span className="flex items-center gap-2 text-sm text-white">
+        <span className="flex items-center gap-2 text-sm text-ink">
           {label}
           {disabled && <Lock className="h-3 w-3 text-muted" aria-hidden="true" />}
         </span>
@@ -135,7 +134,7 @@ export function PreferencesCard() {
         ) : (
           <>
             <fieldset>
-              <legend className="mb-3 flex items-center gap-2 text-sm font-medium text-white">
+              <legend className="mb-3 flex items-center gap-2 text-sm font-medium text-ink">
                 <Bell className="h-4 w-4 text-accent" aria-hidden="true" />
                 Email notifications
               </legend>
@@ -159,7 +158,7 @@ export function PreferencesCard() {
             </fieldset>
 
             <fieldset>
-              <legend className="mb-3 flex items-center gap-2 text-sm font-medium text-white">
+              <legend className="mb-3 flex items-center gap-2 text-sm font-medium text-ink">
                 <Globe className="h-4 w-4 text-accent" aria-hidden="true" />
                 Privacy and marketing
               </legend>
@@ -188,15 +187,15 @@ export function PreferencesCard() {
             </fieldset>
 
             <div>
-              <p className="mb-2 text-sm font-medium text-white">Display</p>
+              <p className="mb-2 text-sm font-medium text-ink">Display</p>
               <p className="text-xs leading-relaxed text-muted">
                 Amounts are shown in US dollars and the interface is in English. Other
                 currencies need an exchange-rate source, and other languages need
                 translations — neither exists yet, so there is nothing to choose between.
               </p>
               <div className="mt-3 flex flex-wrap gap-3">
-                <PendingInfo label="Additional display currencies" />
-                <PendingInfo label="Additional languages" />
+                
+                
               </div>
             </div>
           </>

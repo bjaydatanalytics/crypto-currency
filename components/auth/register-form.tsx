@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox, Input, PasswordInput } from '@/components/ui/input'
@@ -37,6 +38,7 @@ export function RegisterForm() {
   const { toast } = useToast()
   const [errors, setErrors] = useState<Errors>({})
   const [password, setPassword] = useState('')
+  const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
 
@@ -77,11 +79,28 @@ export function RegisterForm() {
       acceptedTerms,
     })
 
+    /**
+     * A new account is signed in already, so go straight to the dashboard.
+     *
+     * `submitting` is left true on this path: the redirect is in flight and
+     * re-enabling the button would invite a second sign-up on a slow network.
+     */
+    if (data.authenticated) {
+      toast({
+        tone: 'success',
+        title: 'Welcome',
+        description: data.message,
+      })
+      router.replace('/dashboard')
+      router.refresh()
+      return
+    }
+
     setSubmitting(false)
     setNotice(data.message)
     toast({
       tone: data.registered ? 'success' : 'warn',
-      title: data.registered ? 'Check your email' : 'Account not created',
+      title: data.registered ? 'Account request received' : 'Account not created',
       description: data.message,
     })
   }
@@ -134,7 +153,7 @@ export function RegisterForm() {
                   key={i}
                   className={cn(
                     'h-1 flex-1 rounded-full transition-colors',
-                    i < score ? strengthColors[score] : 'bg-white/[0.08]',
+                    i < score ? strengthColors[score] : 'bg-elevate/[0.08]',
                   )}
                 />
               ))}
@@ -188,7 +207,7 @@ export function RegisterForm() {
       {notice && (
         <p
           role="status"
-          className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-white/80"
+          className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3.5 text-xs leading-relaxed text-ink/80"
         >
           {notice} You can still{' '}
           <AuthLink href="/dashboard">open the demo dashboard</AuthLink> to explore the interface.

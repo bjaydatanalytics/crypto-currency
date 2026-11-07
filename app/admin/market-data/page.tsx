@@ -7,7 +7,6 @@ import { AdminShell } from '@/components/admin/admin-shell'
 import { AssetIcon, ChangePill } from '@/components/ui/asset-icon'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
-import { PendingInfo } from '@/components/ui/demo-notice'
 import { SkeletonRows } from '@/components/ui/skeleton'
 import { Table, TableWrap, Tbody, Td, Th, Thead, Tr } from '@/components/ui/table'
 import { listQuotes } from '@/lib/api/markets'
@@ -50,34 +49,34 @@ export default function AdminMarketDataPage() {
             <dl className="grid gap-5 sm:grid-cols-2">
               <div>
                 <dt className="text-xs uppercase tracking-wider text-muted">Provider</dt>
-                <dd className="mt-1.5 text-sm text-white">
+                <dd className="mt-1.5 text-sm text-ink">
                   {connected ? 'Configured server-side' : 'None — simulated'}
                 </dd>
               </div>
               <div>
                 <dt className="text-xs uppercase tracking-wider text-muted">Update mechanism</dt>
-                <dd className="mt-1.5 text-sm text-white">
+                <dd className="mt-1.5 text-sm text-ink">
                   {connected ? 'Configured endpoint' : 'Timer-based simulation (5s)'}
                 </dd>
               </div>
             </dl>
 
             <div className="mt-6 rounded-xl border border-line bg-base-800 p-4">
-              <p className="flex items-center gap-2 text-sm font-medium text-white">
+              <p className="flex items-center gap-2 text-sm font-medium text-ink">
                 <RefreshCw className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
                 Connecting a real feed
               </p>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Set <code className="text-white/80">NEXT_PUBLIC_MARKET_API_URL</code> and implement
+                Set <code className="text-ink/80">NEXT_PUBLIC_MARKET_API_URL</code> and implement
                 the live branch of each function in{' '}
-                <code className="text-white/80">lib/api/markets.ts</code>. The response must satisfy{' '}
-                <code className="text-white/80">MarketQuote</code> and{' '}
-                <code className="text-white/80">Candle</code>; no component reads prices directly,
+                <code className="text-ink/80">lib/api/markets.ts</code>. The response must satisfy{' '}
+                <code className="text-ink/80">MarketQuote</code> and{' '}
+                <code className="text-ink/80">Candle</code>; no component reads prices directly,
                 so nothing else changes.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
-                <PendingInfo label="Market data provider and licence terms" />
-                <PendingInfo label="Attribution required by the provider" />
+                
+                
               </div>
             </div>
           </CardBody>
@@ -118,7 +117,7 @@ export default function AdminMarketDataPage() {
                                 size="sm"
                               />
                               <span>
-                                <span className="block font-medium text-white">{quote.name}</span>
+                                <span className="block font-medium text-ink">{quote.name}</span>
                                 <span className="block text-xs text-muted">{quote.symbol}</span>
                               </span>
                             </span>

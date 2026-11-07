@@ -64,7 +64,7 @@ function AdminNavList({ onNavigate }: { onNavigate?: () => void }) {
                   'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors',
                   active
                     ? 'bg-accent/10 text-accent'
-                    : 'text-muted hover:bg-white/[0.04] hover:text-white',
+                    : 'text-muted hover:bg-elevate/[0.04] hover:text-ink',
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -79,7 +79,7 @@ function AdminNavList({ onNavigate }: { onNavigate?: () => void }) {
         <Link
           href="/dashboard"
           onClick={onNavigate}
-          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-white/[0.04] hover:text-white"
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-elevate/[0.04] hover:text-ink"
         >
           <ExternalLink className="h-4 w-4" aria-hidden="true" />
           User dashboard
@@ -95,7 +95,7 @@ function AdminSidebarInner({ onNavigate }: { onNavigate?: () => void }) {
       <div className="flex h-[68px] shrink-0 items-center gap-2.5 border-b border-line px-5">
         <LogoMark className="h-7 w-7 text-accent" />
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold tracking-[0.16em] text-white">
+          <p className="truncate text-sm font-bold tracking-[0.16em] text-ink">
             {brand.wordmark}
           </p>
           <p className="text-[10px] uppercase tracking-[0.16em] text-muted">Admin</p>
@@ -153,12 +153,12 @@ export function AdminShell({
               type="button"
               onClick={() => setDrawerOpen(true)}
               aria-label="Open admin navigation"
-              className="-ml-1 rounded-lg p-2 text-muted transition-colors hover:bg-white/5 hover:text-white lg:hidden"
+              className="-ml-1 rounded-lg p-2 text-muted transition-colors hover:bg-elevate/5 hover:text-ink lg:hidden"
             >
               <Menu className="h-5 w-5" />
             </button>
             <div className="min-w-0">
-              <h1 className="truncate text-base font-semibold text-white sm:text-lg">{title}</h1>
+              <h1 className="truncate text-base font-semibold text-ink sm:text-lg">{title}</h1>
               {description && <p className="truncate text-xs text-muted">{description}</p>}
             </div>
             <Badge
@@ -205,7 +205,7 @@ export function AdminShell({
                 type="button"
                 onClick={() => setDrawerOpen(false)}
                 aria-label="Close admin navigation"
-                className="absolute right-3 top-4 z-10 rounded-lg p-2 text-muted transition-colors hover:bg-white/5 hover:text-white"
+                className="absolute right-3 top-4 z-10 rounded-lg p-2 text-muted transition-colors hover:bg-elevate/5 hover:text-ink"
               >
                 <X className="h-4 w-4" />
               </button>

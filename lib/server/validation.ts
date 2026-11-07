@@ -60,12 +60,6 @@ export const resetPasswordSchema = z.object({
   password: passwordSchema,
 })
 
-export const verifyEmailSchema = z.object({
-  token: z.string().min(6).max(200),
-})
-
-export const resendVerificationSchema = z.object({ email: emailSchema })
-
 export const enableTwoFactorSchema = z.object({
   code: z
     .string()
@@ -458,6 +452,8 @@ const yieldSourceSchema = z
 
 const planFields = {
   tier: z.enum(['starter', 'advanced', 'pro']),
+  /** Defaults to the general catalogue; `retirement` puts it on the 401k page. */
+  category: z.enum(['standard', 'retirement']).default('standard'),
   /** Null means the plan promises no return, which remains valid. */
   fixedRatePercent: fixedRateSchema,
   rateBasis: z.enum(['per_term', 'annual']),
@@ -522,6 +518,7 @@ export const createPlanSchema = z
 export const updatePlanSchema = z
   .object({
     tier: planFields.tier.optional(),
+    category: planFields.category.optional(),
     name: planFields.name.optional(),
     summary: planFields.summary.optional(),
     minimumAmount: nullableAmount.optional(),

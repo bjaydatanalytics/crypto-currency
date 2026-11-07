@@ -6,7 +6,6 @@ import {
   securityAlertEmail,
   supportReplyEmail,
   transactionEmail,
-  verificationEmail,
   type RenderedEmail,
 } from './email-templates'
 
@@ -151,11 +150,6 @@ async function send(to: string, email: RenderedEmail): Promise<MailResult> {
 /* ------------------------------------------------------------------ */
 /* Public API — unchanged call sites                                   */
 /* ------------------------------------------------------------------ */
-
-export function sendVerificationEmail(to: string, token: string): Promise<MailResult> {
-  const link = `${env.APP_URL}/verify-email?token=${encodeURIComponent(token)}`
-  return send(to, verificationEmail(link))
-}
 
 export function sendPasswordResetEmail(to: string, token: string): Promise<MailResult> {
   const link = `${env.APP_URL}/reset-password?token=${encodeURIComponent(token)}`

@@ -6,7 +6,7 @@
  * believe they had saved. These call the API or they fail.
  */
 
-import type { InvestmentPlan, PlanTier } from '../types'
+import type { InvestmentPlan, PlanCategory, PlanTier } from '../types'
 import { request } from './client'
 
 export interface AdminPlan extends InvestmentPlan {
@@ -17,6 +17,8 @@ export interface AdminPlan extends InvestmentPlan {
 
 export interface PlanPayload {
   tier: PlanTier
+  /** Which catalogue the plan appears in: the plans grid, or the 401k page. */
+  category: PlanCategory
   /** Null for a plan that promises no return. */
   fixedRatePercent: number | null
   rateBasis: 'per_term' | 'annual'

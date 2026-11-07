@@ -58,7 +58,7 @@ export function Logo({ className, markOnly, href = '/' }: LogoProps) {
     >
       <LogoMark className="h-8 w-8 shrink-0 text-accent" />
       {!markOnly && (
-        <span className="text-[17px] font-bold tracking-[0.18em] text-white">
+        <span className="text-[17px] font-bold tracking-[0.18em] text-ink">
           {brand.wordmark}
         </span>
       )}

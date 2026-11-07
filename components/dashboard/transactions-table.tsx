@@ -94,11 +94,11 @@ export function TransactionsTable({ transactions }: { transactions: Transaction[
           return (
             <MobileCard key={tx.id}>
               <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-white/[0.03]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-elevate/[0.03]">
                   <Icon className={`h-4 w-4 ${typeTone[tx.type]}`} aria-hidden="true" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium capitalize text-white">
+                  <p className="truncate text-sm font-medium capitalize text-ink">
                     {tx.type} · {tx.symbol}
                   </p>
                   <p className="text-xs text-muted">{formatDate(tx.date)}</p>

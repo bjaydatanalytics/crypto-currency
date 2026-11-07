@@ -127,7 +127,7 @@ export function TradingInterface({
       {/* ---------------- Asset selector ---------------- */}
       <Card className="order-1 overflow-hidden">
         <div className="border-b border-line px-4 py-3">
-          <h3 className="text-sm font-medium text-white">Markets</h3>
+          <h3 className="text-sm font-medium text-ink">Markets</h3>
         </div>
         <ul className="max-h-[220px] overflow-y-auto xl:max-h-[520px]">
           {quotes.length === 0
@@ -149,7 +149,7 @@ export function TradingInterface({
                         'flex w-full items-center gap-3 border-l-2 px-4 py-3 text-left transition-colors',
                         active
                           ? 'border-accent bg-accent/[0.06]'
-                          : 'border-transparent hover:bg-white/[0.03]',
+                          : 'border-transparent hover:bg-elevate/[0.03]',
                       )}
                     >
                       <AssetIcon
@@ -158,7 +158,7 @@ export function TradingInterface({
                         size="sm"
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-white">
+                        <p className="truncate text-sm font-medium text-ink">
                           {item.symbol}/USDT
                         </p>
                         <p className="num truncate text-xs text-muted">
@@ -189,14 +189,14 @@ export function TradingInterface({
             )}
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold text-white">{symbol}/USDT</h3>
+                <h3 className="text-base font-semibold text-ink">{symbol}/USDT</h3>
                 <Badge tone="warn" className="normal-case tracking-normal">
                   Demo
                 </Badge>
               </div>
               {quote ? (
                 <div className="mt-0.5 flex items-center gap-2">
-                  <span className="num text-sm text-white/90">{formatCurrency(quote.price)}</span>
+                  <span className="num text-sm text-ink/90">{formatCurrency(quote.price)}</span>
                   <ChangePill value={quote.changePercent24h} showBackground={false} className="px-0" />
                 </div>
               ) : (
@@ -219,8 +219,8 @@ export function TradingInterface({
                 className={cn(
                   'num rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
                   tf === timeframe
-                    ? 'bg-accent text-black'
-                    : 'text-muted hover:bg-white/[0.05] hover:text-white',
+                    ? 'bg-accent text-on-accent'
+                    : 'text-muted hover:bg-elevate/[0.05] hover:text-ink',
                 )}
               >
                 {tf}
@@ -251,7 +251,7 @@ export function TradingInterface({
             ].map((stat) => (
               <div key={stat.label} className="bg-surface px-4 py-3">
                 <dt className="text-[11px] uppercase tracking-wider text-muted">{stat.label}</dt>
-                <dd className="num mt-1 text-sm text-white">{stat.value}</dd>
+                <dd className="num mt-1 text-sm text-ink">{stat.value}</dd>
               </div>
             ))}
           </dl>
@@ -261,7 +261,7 @@ export function TradingInterface({
       {/* ---------------- Order panel ---------------- */}
       <Card className="order-2 xl:order-3">
         <div className="flex items-center justify-between gap-3 border-b border-line p-4">
-          <h3 className="text-sm font-medium text-white">Place order</h3>
+          <h3 className="text-sm font-medium text-ink">Place order</h3>
           <Badge tone="warn" dot className="normal-case tracking-normal">
             Demo trading
           </Badge>
@@ -285,7 +285,7 @@ export function TradingInterface({
                     ? value === 'buy'
                       ? 'bg-positive/20 text-positive'
                       : 'bg-negative/20 text-negative'
-                    : 'text-muted hover:text-white',
+                    : 'text-muted hover:text-ink',
                 )}
               >
                 {value === 'buy' ? (
@@ -334,7 +334,7 @@ export function TradingInterface({
           <dl className="space-y-2 rounded-xl border border-line bg-base-800 p-3.5 text-sm">
             <div className="flex justify-between">
               <dt className="text-muted">Est. total</dt>
-              <dd className="num text-white">
+              <dd className="num text-ink">
                 {estimatedTotal > 0 ? formatCurrency(estimatedTotal) : '—'}
               </dd>
             </div>
@@ -357,7 +357,7 @@ export function TradingInterface({
           {result && (
             <p
               role="status"
-              className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3 text-xs leading-relaxed text-white/80"
+              className="rounded-lg border border-warn/25 bg-warn/[0.07] p-3 text-xs leading-relaxed text-ink/80"
             >
               {result}
             </p>

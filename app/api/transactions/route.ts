@@ -2,7 +2,7 @@ import { desc, eq, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { ledgerAccounts, ledgerEntries, ledgerTransactions } from '@/db/ledger-schema'
 import { ok, withErrorHandling } from '@/lib/server/api'
-import { requireVerifiedUser } from '@/lib/server/guard'
+import { requireUser } from '@/lib/server/guard'
 
 /**
  * Transaction history, read from the ledger.
@@ -13,7 +13,7 @@ import { requireVerifiedUser } from '@/lib/server/guard'
  * customer did.
  */
 export const GET = withErrorHandling(async (request: Request) => {
-  const guard = await requireVerifiedUser()
+  const guard = await requireUser()
   if (!guard.ok) return guard.response
 
   const url = new URL(request.url)

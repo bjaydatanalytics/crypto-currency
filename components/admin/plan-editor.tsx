@@ -19,7 +19,7 @@ import {
   type AdminPlan,
   type PlanPayload,
 } from '@/lib/api/plans'
-import type { PlanTier } from '@/lib/types'
+import type { PlanCategory, PlanTier } from '@/lib/types'
 
 /**
  * Plan configuration.
@@ -46,6 +46,23 @@ const TIERS: Array<{ value: PlanTier; label: string }> = [
   { value: 'pro', label: 'Pro' },
 ]
 
+/**
+ * Which customer-facing catalogue the plan belongs to.
+ *
+ * `standard` plans appear on Investments → Investment Plans; `retirement`
+ * plans appear on the 401k page instead. A plan is in exactly one, so moving
+ * it between them is how a plan changes product — not a copy.
+ */
+const CATEGORIES: Array<{ value: PlanCategory; label: string }> = [
+  { value: 'standard', label: 'Investment plans' },
+  { value: 'retirement', label: '401k / retirement' },
+]
+
+const CATEGORY_LABEL: Record<PlanCategory, string> = {
+  standard: 'Investment',
+  retirement: '401k',
+}
+
 function errorMessage(cause: unknown, fallback: string): string {
   return cause instanceof Error ? cause.message : fallback
 }
@@ -64,6 +81,7 @@ function numberToField(value: number | null): string {
 
 interface Draft {
   tier: PlanTier
+  category: PlanCategory
   fixedRatePercent: string
   rateBasis: 'per_term' | 'annual'
   yieldSource: string
@@ -84,6 +102,7 @@ interface Draft {
 function draftFrom(plan: AdminPlan): Draft {
   return {
     tier: plan.tier,
+    category: plan.category,
     fixedRatePercent: numberToField(plan.fixedRatePercent ?? null),
     rateBasis: plan.rateBasis ?? 'per_term',
     yieldSource: plan.yieldSource ?? '',
@@ -104,6 +123,7 @@ function draftFrom(plan: AdminPlan): Draft {
 
 const EMPTY_DRAFT: Draft = {
   tier: 'starter',
+  category: 'standard',
   fixedRatePercent: '',
   rateBasis: 'per_term',
   yieldSource: '',
@@ -124,6 +144,7 @@ const EMPTY_DRAFT: Draft = {
 function toPayload(draft: Draft): PlanPayload {
   return {
     tier: draft.tier,
+    category: draft.category,
     name: draft.name.trim(),
     summary: draft.summary.trim(),
     minimumAmount: toNullableNumber(draft.minimumAmount),
@@ -164,14 +185,14 @@ function FeatureEditor({
 
   return (
     <div>
-      <p className="mb-2 text-sm font-medium text-white/90">Features</p>
+      <p className="mb-2 text-sm font-medium text-ink/90">Features</p>
 
       {features.length > 0 && (
         <ul className="mb-3 flex flex-wrap gap-2">
           {features.map((feature) => (
             <li
               key={feature}
-              className="flex items-center gap-1.5 rounded-lg border border-line bg-base-800 px-3 py-1.5 text-xs text-white/80"
+              className="flex items-center gap-1.5 rounded-lg border border-line bg-base-800 px-3 py-1.5 text-xs text-ink/80"
             >
               {feature}
               <button
@@ -204,6 +225,63 @@ function FeatureEditor({
           Add
         </Button>
       </div>
+    </div>
+  )
+}
+
+/**
+ * What a plan actually promises, summarised for an operator.
+ *
+ * The stored rate is the TOTAL over the term; the customer card leads with the
+ * per-day figure. Both are shown here so the two screens can be reconciled
+ * without arithmetic — a plan that reads "1.10%" to a customer and "401.5%"
+ * in admin is otherwise alarming to find.
+ *
+ * A missing yield source is called out because it is the thing that will block
+ * publishing, and the database error alone does not say which field is at
+ * fault.
+ */
+function PromisedReturn({ plan }: { plan: AdminPlan }) {
+  const rate = plan.fixedRatePercent
+
+  if (rate === null || rate === undefined) {
+    return (
+      <p className="rounded-lg border border-line bg-elevate/[0.02] p-3 text-xs text-muted">
+        Promises no return. Customers cannot subscribe to this plan from the investment pages.
+      </p>
+    )
+  }
+
+  const perDay = plan.duration ? rate / plan.duration : null
+  const maxEarn = plan.maximumAmount === null ? null : (plan.maximumAmount * rate) / 100
+  const missingSource = !plan.yieldSource || plan.yieldSource.trim().length < 20
+
+  return (
+    <div className="rounded-lg border border-accent/25 bg-accent/[0.04] p-3">
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
+        <span className="num font-semibold text-accent">
+          {rate}% {plan.rateBasis === 'annual' ? 'a year' : 'total'}
+        </span>
+        {perDay !== null && (
+          <span className="num text-xs text-muted">
+            {perDay.toFixed(2)}% × {plan.duration} days, as the customer sees it
+          </span>
+        )}
+        {maxEarn !== null && (
+          <span className="num text-xs text-muted">
+            max payout {maxEarn.toLocaleString('en-US', { maximumFractionDigits: 2 })}{' '}
+            {plan.currency}
+          </span>
+        )}
+      </div>
+
+      {missingSource && (
+        <p className="mt-2 flex items-start gap-1.5 text-xs leading-relaxed text-warn">
+          <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          No yield source set. Publishing is refused until you state where the money to pay this
+          return comes from.
+        </p>
+      )}
     </div>
   )
 }
@@ -294,14 +372,15 @@ function PlanForm({
       <div className="space-y-5">
         <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-          <p className="text-sm leading-relaxed text-white/80">
-            Published terms are a financial promotion. Do not write a rate of return, a projected
-            profit, or wording that implies a guarantee — in most jurisdictions that is a regulated
-            communication and, if unfounded, unlawful. There is deliberately no field for one.
+          <p className="text-sm leading-relaxed text-ink/80">
+            Published terms are a financial promotion. A rate below is a debt owed at maturity,
+            not a projection, and editing it does not change contracts already open — those froze
+            their terms when the customer subscribed. Never write wording that implies a
+            guarantee of performance.
           </p>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-3">
           <Input
             label="Name"
             value={draft.name}
@@ -313,6 +392,13 @@ function PlanForm({
             options={TIERS}
             value={draft.tier}
             onChange={(event) => set('tier', event.target.value as PlanTier)}
+          />
+          <Select
+            label="Catalogue"
+            options={CATEGORIES}
+            value={draft.category}
+            onChange={(event) => set('category', event.target.value as PlanCategory)}
+            hint="Which customer page this plan appears on."
           />
         </div>
 
@@ -377,7 +463,7 @@ function PlanForm({
 
         {/* ---------- The promised return ---------- */}
         <div className="rounded-xl border border-line p-4">
-          <p className="text-sm font-medium text-white">Promised return</p>
+          <p className="text-sm font-medium text-ink">Promised return</p>
           <p className="mt-1 text-xs leading-relaxed text-muted">
             Leave the rate blank for a plan that promises nothing. A figure here is a debt the
             business owes at maturity, paid from the treasury — not a projection.
@@ -419,7 +505,7 @@ function PlanForm({
 
               <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
                 <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-                <div className="text-sm leading-relaxed text-white/80">
+                <div className="text-sm leading-relaxed text-ink/80">
                   <p className="font-medium text-warn">This makes the plan a financial product</p>
                   <p className="mt-1.5">
                     You will owe {draft.fixedRatePercent || '—'}%{' '}
@@ -467,7 +553,7 @@ function PlanForm({
         />
 
         <div className="flex flex-col gap-3 rounded-xl border border-line p-4 sm:flex-row sm:gap-6">
-          <label className="flex items-center gap-2.5 text-sm text-white/80">
+          <label className="flex items-center gap-2.5 text-sm text-ink/80">
             <input
               type="checkbox"
               checked={draft.popular}
@@ -476,7 +562,7 @@ function PlanForm({
             />
             Mark as &quot;Most chosen&quot;
           </label>
-          <label className="flex items-center gap-2.5 text-sm text-white/80">
+          <label className="flex items-center gap-2.5 text-sm text-ink/80">
             <input
               type="checkbox"
               checked={draft.published}
@@ -530,6 +616,8 @@ export function PlanEditor() {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<AdminPlan | null>(null)
+  /** Narrows the list to one catalogue. The two are separate products. */
+  const [catalogue, setCatalogue] = useState<PlanCategory | 'all'>('all')
 
   const load = useCallback(async () => {
     try {
@@ -612,25 +700,41 @@ export function PlanEditor() {
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-negative">Could not load plans</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
           </div>
         </CardBody>
       </Card>
     )
   }
 
-  const publishedCount = plans?.filter((plan) => plan.published).length ?? 0
+  const visible =
+    plans === null
+      ? null
+      : catalogue === 'all'
+        ? plans
+        : plans.filter((plan) => plan.category === catalogue)
+
+  const publishedCount = visible?.filter((plan) => plan.published).length ?? 0
+
+  const countFor = (value: PlanCategory | 'all') =>
+    plans === null
+      ? 0
+      : value === 'all'
+        ? plans.length
+        : plans.filter((plan) => plan.category === value).length
 
   return (
     <div className="space-y-6">
       <Card className="border-warn/25 bg-warn/[0.05]">
-        <CardBody className="text-sm leading-relaxed text-white/75">
+        <CardBody className="text-sm leading-relaxed text-ink/75">
           <p className="font-medium text-warn">Terms published here are a financial promotion</p>
           <p className="mt-1.5">
-            Whatever you publish is shown to prospective customers. Do not enter a rate of return,
-            a projected profit or any wording that implies a guarantee — in most jurisdictions that
-            is a regulated communication and, if unfounded, unlawful. There is deliberately no
-            field for a return, and every plan must carry a risk disclosure before it can be saved.
+            Whatever you publish is shown to prospective customers, and in most jurisdictions a
+            promised return is a regulated communication. A rate entered here is a{' '}
+            <strong className="font-semibold text-warn">debt the business owes at maturity</strong>,
+            paid from the treasury whatever your own performance was — not a projection. It cannot
+            be published without a term and a written statement of where the money comes from, and
+            every plan must carry a risk disclosure before it can be saved at all.
           </p>
         </CardBody>
       </Card>
@@ -640,21 +744,50 @@ export function PlanEditor() {
           <div>
             <CardTitle>Investment plans</CardTitle>
             <p className="mt-1 text-xs text-muted">
-              {plans === null
+              {visible === null
                 ? 'Loading…'
-                : `${plans.length} plan${plans.length === 1 ? '' : 's'}, ${publishedCount} published`}
+                : `${visible.length} plan${visible.length === 1 ? '' : 's'}, ${publishedCount} published`}
             </p>
           </div>
-          <Button size="sm" className="sm:ml-auto" onClick={openNew}>
-            <Plus className="h-4 w-4" aria-hidden="true" />
-            New plan
-          </Button>
+
+          <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
+            <div
+              role="group"
+              aria-label="Filter by catalogue"
+              className="flex rounded-lg border border-line p-0.5"
+            >
+              {([
+                ['all', 'All'],
+                ['standard', 'Investment'],
+                ['retirement', '401k'],
+              ] as const).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setCatalogue(value)}
+                  aria-pressed={catalogue === value}
+                  className={
+                    catalogue === value
+                      ? 'rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-on-accent'
+                      : 'rounded-md px-3 py-1.5 text-xs text-muted transition-colors hover:text-ink'
+                  }
+                >
+                  {label} ({countFor(value)})
+                </button>
+              ))}
+            </div>
+
+            <Button size="sm" onClick={openNew}>
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              New plan
+            </Button>
+          </div>
         </CardHeader>
 
         <CardBody>
-          {plans === null ? (
+          {visible === null ? (
             <SkeletonRows rows={3} />
-          ) : plans.length === 0 ? (
+          ) : visible.length === 0 ? (
             <EmptyState
               title="No plans yet"
               description="Create one to show tiers on the public plan pages. Nothing is shown to visitors until you publish it."
@@ -663,7 +796,7 @@ export function PlanEditor() {
             />
           ) : (
             <ul className="space-y-4">
-              {plans.map((plan) => (
+              {visible.map((plan) => (
                 <li key={plan.id}>
                   <Card>
                     <CardHeader className="flex-col items-start gap-3 sm:flex-row sm:items-center">
@@ -672,6 +805,9 @@ export function PlanEditor() {
                           <CardTitle>{plan.name}</CardTitle>
                           <Badge tone={plan.published ? 'success' : 'neutral'}>
                             {plan.published ? 'Published' : 'Draft'}
+                          </Badge>
+                          <Badge tone={plan.category === 'retirement' ? 'info' : 'neutral'}>
+                            {CATEGORY_LABEL[plan.category]}
                           </Badge>
                           {plan.popular && <Badge tone="accent">Most chosen</Badge>}
                         </div>
@@ -702,6 +838,8 @@ export function PlanEditor() {
                     </CardHeader>
 
                     <CardBody className="space-y-4">
+                      <PromisedReturn plan={plan} />
+
                       <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-2 xl:grid-cols-4">
                         {[
                           [
@@ -724,7 +862,7 @@ export function PlanEditor() {
                             <dd
                               className={
                                 value
-                                  ? 'num text-sm font-medium text-white'
+                                  ? 'num text-sm font-medium text-ink'
                                   : 'text-xs italic text-muted'
                               }
                             >
@@ -747,7 +885,7 @@ export function PlanEditor() {
                         </ul>
                       )}
 
-                      <p className="rounded-lg border border-line bg-white/[0.02] p-3 text-xs leading-relaxed text-muted">
+                      <p className="rounded-lg border border-line bg-elevate/[0.02] p-3 text-xs leading-relaxed text-muted">
                         {plan.riskDisclosure}
                       </p>
                     </CardBody>

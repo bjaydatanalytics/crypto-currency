@@ -221,7 +221,7 @@ function RecordDepositDialog({
         {userId && assignments.length === 0 && (
           <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-white/80">
+            <p className="text-sm leading-relaxed text-ink/80">
               That user has no deposit address assigned, so there is no destination this deposit
               could have arrived at. Assign one first — if funds really did arrive, find out which
               address they went to before recording anything.
@@ -244,7 +244,7 @@ function RecordDepositDialog({
         {destination && (
           <div className="rounded-xl border border-line bg-base-800 p-4">
             <p className="text-xs uppercase tracking-wider text-muted">Arrived at</p>
-            <p className="num mt-2 break-all text-sm text-white">{destination.address}</p>
+            <p className="num mt-2 break-all text-sm text-ink">{destination.address}</p>
             {destination.addressTag && (
               <p className="num mt-1 break-all text-sm text-warn">
                 tag: {destination.addressTag}
@@ -359,7 +359,7 @@ function CreditDialog({
         <div className="space-y-5">
           <div className="flex items-start gap-3 rounded-xl border border-warn/30 bg-warn/[0.06] p-4">
             <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-white/80">
+            <p className="text-sm leading-relaxed text-ink/80">
               The customer can withdraw against this the moment it posts. Reversing it later means
               posting an opposing ledger adjustment, which does not help if the funds are already
               gone. Check the amount against the transaction before continuing.
@@ -382,7 +382,7 @@ function CreditDialog({
                 <dt className="shrink-0 text-xs uppercase tracking-wider text-muted sm:w-32">
                   {label}
                 </dt>
-                <dd className="num min-w-0 break-all text-sm text-white">{value}</dd>
+                <dd className="num min-w-0 break-all text-sm text-ink">{value}</dd>
               </div>
             ))}
           </dl>
@@ -565,7 +565,7 @@ export function DepositReview() {
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-negative" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-negative">Could not load deposits</p>
-            <p className="mt-1 text-sm leading-relaxed text-white/75">{loadError}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink/75">{loadError}</p>
           </div>
         </CardBody>
       </Card>
@@ -635,14 +635,14 @@ export function DepositReview() {
                       <Tr key={row.id}>
                         <Td className="text-muted">{formatDate(row.detectedAt)}</Td>
                         <Td>
-                          <span className="text-white">{row.userName}</span>
+                          <span className="text-ink">{row.userName}</span>
                           <span className="block text-xs text-muted">{row.userEmail}</span>
                         </Td>
                         <Td>
                           {row.assetSymbol}
                           <span className="block text-xs text-muted">{row.networkLabel}</span>
                         </Td>
-                        <Td numeric className="num text-white">
+                        <Td numeric className="num text-ink">
                           {row.amount}
                         </Td>
                         <Td>
@@ -713,7 +713,7 @@ export function DepositReview() {
                 {deposits.map((row) => (
                   <MobileCard key={row.id}>
                     <div className="flex items-center justify-between gap-3">
-                      <p className="num text-sm font-medium text-white">
+                      <p className="num text-sm font-medium text-ink">
                         {row.amount} {row.assetSymbol}
                       </p>
                       <Badge tone={STATUS_TONES[row.status]}>{row.status}</Badge>

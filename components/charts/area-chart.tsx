@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { axisProps, chartColors } from '@/lib/chart-theme'
+import { axisPropsFor, useChartTheme } from '@/lib/chart-theme'
 import type { PricePoint } from '@/lib/types'
 import { formatCompact, formatCurrency, formatDate } from '@/lib/utils'
 import { ChartTooltip } from './chart-tooltip'
@@ -18,7 +18,7 @@ import { ChartTooltip } from './chart-tooltip'
 interface PerformanceAreaChartProps {
   data: PricePoint[]
   height?: number
-  /** Lime for portfolio value; red when the series is down over the window. */
+  /** Defaults to the active theme's accent; pass red when the series is down. */
   color?: string
   showAxes?: boolean
   valueFormatter?: (value: number) => string
@@ -34,26 +34,29 @@ interface PerformanceAreaChartProps {
 export function PerformanceAreaChart({
   data,
   height = 280,
-  color = chartColors.accent,
+  color,
   showAxes = true,
   valueFormatter = (v) => formatCurrency(v),
   ariaLabel,
 }: PerformanceAreaChartProps) {
   const gradientId = useId().replace(/:/g, '')
+  const [ref, theme] = useChartTheme()
+  const axisProps = axisPropsFor(theme)
+  const stroke = color ?? theme.accent
 
   return (
-    <div role="img" aria-label={ariaLabel} style={{ width: '100%', height }}>
+    <div ref={ref} role="img" aria-label={ariaLabel} style={{ width: '100%', height }}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 8, right: 8, left: showAxes ? 0 : -12, bottom: 0 }}>
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.28} />
-              <stop offset="100%" stopColor={color} stopOpacity={0} />
+              <stop offset="0%" stopColor={stroke} stopOpacity={0.28} />
+              <stop offset="100%" stopColor={stroke} stopOpacity={0} />
             </linearGradient>
           </defs>
 
           {/* Recessive grid: horizontal only, so it reads as a guide not a cage */}
-          <CartesianGrid stroke={chartColors.grid} vertical={false} />
+          <CartesianGrid stroke={theme.grid} vertical={false} />
 
           <XAxis
             dataKey="time"
@@ -72,17 +75,17 @@ export function PerformanceAreaChart({
 
           <Tooltip
             content={<ChartTooltip valueFormatter={valueFormatter} />}
-            cursor={{ stroke: color, strokeWidth: 1, strokeDasharray: '4 4', strokeOpacity: 0.5 }}
+            cursor={{ stroke, strokeWidth: 1, strokeDasharray: '4 4', strokeOpacity: 0.5 }}
           />
 
           <Area
             type="monotone"
             dataKey="value"
-            stroke={color}
+            stroke={stroke}
             strokeWidth={2}
             fill={`url(#${gradientId})`}
             // >=8px hit target on hover, hidden until then
-            activeDot={{ r: 4.5, fill: color, stroke: chartColors.surface, strokeWidth: 2 }}
+            activeDot={{ r: 4.5, fill: stroke, stroke: theme.surface, strokeWidth: 2 }}
             dot={false}
             isAnimationActive
             animationDuration={700}
